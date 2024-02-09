@@ -8,7 +8,7 @@ import { blockMapReducer } from "./blockMap";
 const reducer = combineReducers({
     blocks: blocksReducer,
     blocksCoordinates: blocksCoordinatesReducer,
-    blockMap: blockMapReducer,
+    blocksMap: blockMapReducer,
 });
 
 const middlewareEnhancer = applyMiddleware(thunk, logger);

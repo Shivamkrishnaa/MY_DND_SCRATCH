@@ -1,3 +1,6 @@
 export const ItemTypes = {
-    MOTION: "Motion"
+    MOTION: "Motion",
+    SPRITE: "Sprite",
+
 };
+// export function

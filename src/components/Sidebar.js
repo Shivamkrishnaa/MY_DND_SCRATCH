@@ -1,7 +1,7 @@
 import React from "react";
 import { Block } from "./Block";
-import { Container } from "./Container";
 import { useSelector } from "react-redux";
+import { DragContainer } from "./DragContainer";
 
 export default function Sidebar() {
   const blocks = useSelector((state) => {
@@ -10,9 +10,9 @@ export default function Sidebar() {
   return (
     <div className="w-60 flex-none h-full overflow-y-auto flex flex-col items-start p-2 border-r border-gray-200">
       <div className="font-bold"> {"Events"} </div>
-      {blocks.map(id => (<Container id={id}>
+      {blocks.map(id => (<DragContainer id={id}>
         <Block id={id} />
-      </Container>))}
+      </DragContainer>))}
     </div>
   );
 };
