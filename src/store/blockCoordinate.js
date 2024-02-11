@@ -7,10 +7,13 @@ import { uniqueId } from 'lodash';
 export const blocksCoordinatesReducer = (state = {
     blocks: {
         1: { id: 1, top: 20, left: 200+80 },
-        5: { id: 5, top: 40, left: 200+460 },
+        5: { id: 5, top: 340, left: 200 },
     }
 }, action) => {
     switch (action.type) {
+        case "MOVE": 
+            const newState = {...state};
+            return newState;
         case "ADD_IN_CONTAINER":
             // root block to root block
             var { dragged, dropped } = action.payload;

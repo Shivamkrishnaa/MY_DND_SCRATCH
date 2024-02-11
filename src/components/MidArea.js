@@ -32,7 +32,7 @@ const getCorrectDroppedOffsetValue = (initialPosition, finalPosition) => {
   };
 };
 const styles = {
-  // position: "relative",
+  transform: "rotate(0deg)",
 };
 
 export default function MidArea() {
@@ -45,7 +45,7 @@ export default function MidArea() {
   const [{ isOver, isOverCurrent }, drop] = useDrop(() => ({
     accept: Object.values(ItemTypes),
     drop(dragged, monitor) {
-      
+      if (!!monitor.didDrop() && !!monitor.getDropResult()) return;
       console.error('MidArea : useDrop :');
       console.log('dragged :', dragged);
       console.log('monitor.isOver():', monitor?.isOver?.());
@@ -78,11 +78,8 @@ export default function MidArea() {
       isOverCurrent: monitor.isOver({ shallow: !true }),
     }),
   }));
-
-  return <div ref={ref}>
-    <div ref={drop} className="midarea" style={styles}>
+  return <div ref={drop} className="midarea h-full w-full" style={styles}>
       <div className="font-bold"> {"Midarea"} </div>
       {Object.keys(blocks).map((id, index) => (<Box id={id} key={index} />))}
-    </div>
-  </div>;
+    </div>;
 };

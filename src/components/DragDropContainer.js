@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { useDispatch, useSelector } from 'react-redux';
 import { ItemTypes } from '../utils';
+import { uniqueId } from 'lodash';
 
 export const DragDropContainer = ({ children, type = ItemTypes.MOTION, id, index, rootId }) => {
   // console.log(id, index, ' id, index ');
@@ -53,25 +54,28 @@ export const DragDropContainer = ({ children, type = ItemTypes.MOTION, id, index
         //   item.index = hoverIndex;
       },
       drop(item, monitor) {
+        if (!!monitor.didDrop() && !!monitor.getDropResult()) return;
        
-        console.error('DragDropContainer : useDrop : drop');
+        console.error('chote boxes jispe drop krna hai: useDrop : drop');
         console.log('item :', item);
         console.log('scope item :', {id, index, rootId});
         console.log('monitor.isOver(), :', monitor?.isOver());
         console.log('monitor.didDrop() :', monitor?.didDrop());
         console.log('monitor.getDifferenceFromInitialOffset() :', monitor?.getDifferenceFromInitialOffset());
         console.log('monitor.getInitialSourceClientOffset() :', monitor?.getInitialSourceClientOffset());
-        console.error(' "ADD_IN_CONTAINER" :',  "ADD_IN_CONTAINER");
+        console.log('monitor.getDropResult() :', monitor?.getDropResult());
+        console.error(' "chote boxes" :',  "ADD_IN_CONTAINER");
         
-      // const didDrop = monitor.didDrop()
-      //   if (didDrop) {
-      //     return;
-      //   }
-      //   const payload = {
-      //     dragged: item, // item which is dragged
-      //     dropped: { id, index, rootId } // item on which is dropped
-      //   };
-      //   dispatch({ type: "ADD_IN_CONTAINER", payload });
+      const didDrop = monitor.didDrop()
+        if (didDrop) {
+          return;
+        }
+        const payload = {
+          dragged: item, // item which is dragged
+          dropped: { id, index, rootId },
+          uId: uniqueId("b_"),// item on which is dropped
+        };
+        dispatch({ type: "MOVE_IN_CONAINER", payload });
       },
       collect: (monitor) => ({
         isOver: monitor.isOver(),
@@ -85,14 +89,14 @@ export const DragDropContainer = ({ children, type = ItemTypes.MOTION, id, index
     item: { left, top, id, index, rootId },
     end: (item, monitor) => {
        
-      console.error('DragDropContainer : useDrag : end');
+      console.error('andar vala container jisko uthaya : useDrag : end');
       console.log('item :', item);
       console.log('scope item :',{ id, index, rootId });
       console.log('monitor.isOver():', monitor?.isOver?.());
       console.log('monitor.didDrop():', monitor?.didDrop?.());
       console.log('monitor.getDifferenceFromInitialOffset():', monitor?.getDifferenceFromInitialOffset?.());
       console.log('monitor.getInitialSourceClientOffset():', monitor?.getInitialSourceClientOffset?.());
-      console.error(' "MOVE_BLOCK" :',  "MOVE_BLOCK");
+      console.error(' "anda vala container" :',  "MOVE_BLOCK");
 
       // dispatch({
       // type: "MOVE_BLOCK", payload: {

@@ -19,14 +19,14 @@ export const DragContainer = ({ children, id }) => {
         end: (item, monitor) => {
 
 
-            console.error('DragContainer : useDrag : end');
+            console.error('side vale box : useDrag : end');
             console.log('item :', item);
             console.log('scope item :', { id });
             console.log('monitor.isOver():', monitor?.isOver?.());
             console.log('monitor.didDrop():', monitor?.didDrop?.());
             console.log('monitor.getDifferenceFromInitialOffset():', monitor?.getDifferenceFromInitialOffset?.());
             console.log('monitor.getInitialSourceClientOffset():', monitor?.getInitialSourceClientOffset?.());
-            console.error(' "ADD_BLOCK" :', "ADD_BLOCK");
+            console.error(' "side vale box" :', "ADD_BLOCK");
 
 
             console.error("DragContainer DRAG END")

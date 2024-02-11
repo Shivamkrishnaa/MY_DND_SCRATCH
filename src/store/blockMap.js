@@ -1,5 +1,5 @@
 export function blockMapReducer(state = {
-    1:
+    1: 
         [1,
             [2,
                 [
@@ -19,6 +19,18 @@ export function blockMapReducer(state = {
         ]
 }, action) {
     switch (action.type) {
+        case "MOVE_IN_CONAINER":
+            const newState = {...state};
+            const { dragged, dropped } = action.payload;
+            if(!dragged.hasOwnProperty("rootId")) {
+                if(dropped.hasOwnProperty("rootId")) {
+                    const newSubBlock = newState[dropped.rootId];
+                    console.log(newSubBlock,' newSubBlock ');
+                }
+            }
+            console.log(action.payload,' action.payload ');
+
+            return newState;
         case "ADD_IN_CONTAINER":
             return { ...state };
         case "ADD_BLOCK":
