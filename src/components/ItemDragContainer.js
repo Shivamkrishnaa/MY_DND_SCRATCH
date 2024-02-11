@@ -4,13 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { uniqueId } from 'lodash';
 
 const style = {
-    position: 'absolute',
+    // position: 'absolute',
     // display: "inline-block",
-    padding: '0.5rem 1rem',
-    margin: '0.5rem 1rem',
+    padding: '0rem',
+    margin: '0rem',
     background: "lightblue",
 };
-export const DragContainer = ({ children, id }) => {
+export const ItemDragContainer = ({ children, id }) => {
     // const dispatch = useDispatch();
     const ref = useRef();
     const { type = "Motion", action, top, left } = useSelector((state) => {
@@ -58,20 +58,17 @@ export const DragContainer = ({ children, id }) => {
         }
     }));
     return collected.isDragging ? (
-        <div className='drag-container' style={{
+        <div className={'drag-container--'+id} style={{
             ...style,
+            top, left,
 
-            top, left
 
-        }} 
-        // ref={dragPreview}
-         />
-    ) : (<div className='drag-container' style={{
+        }} ref={dragPreview} />
+    ) : (<div className={'drag-container--'+id} style={{
         ...style,
+        top, left,
 
-        top, left
 
     }} 
-    // ref={drag}
-    >{children}</div>);
+    ref={drag} >1{children}</div>);
 }

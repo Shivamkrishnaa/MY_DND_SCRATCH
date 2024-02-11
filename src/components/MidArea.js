@@ -1,10 +1,9 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box } from "./Box";
+import { QuoteApp } from "./QuoteApp";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "../utils";
-import { uniqueId } from "lodash";
-import { useForkRef } from "rooks";
+// import { uniqueId } from "lodash";
 // import useForkRef from "@rooks/use-fork-ref"
 
 const getCorrectDroppedOffsetValue = (initialPosition, finalPosition) => {
@@ -33,19 +32,22 @@ const getCorrectDroppedOffsetValue = (initialPosition, finalPosition) => {
 };
 const styles = {
   // position: "relative",
+  padding: "10px",
+  margin: "10px",
+  // display: "inline-block",
+  // width: "100%"
 };
 
 export default function MidArea() {
-  const ref = useRef();
   const dispatch = useDispatch();
   const blocks = useSelector((state) => {
     return state.blocksCoordinates.blocks;
   });
-  
+
   const [{ isOver, isOverCurrent }, drop] = useDrop(() => ({
     accept: Object.values(ItemTypes),
     drop(dragged, monitor) {
-      
+
       console.error('MidArea : useDrop :');
       console.log('dragged :', dragged);
       console.log('monitor.isOver():', monitor?.isOver?.());
@@ -79,10 +81,11 @@ export default function MidArea() {
     }),
   }));
 
-  return <div ref={ref}>
-    <div ref={drop} className="midarea" style={styles}>
-      <div className="font-bold"> {"Midarea"} </div>
-      {Object.keys(blocks).map((id, index) => (<Box id={id} key={index} />))}
-    </div>
-  </div>;
+  return  <div ref={drop} className="midarea" 
+  style={styles}
+  >
+      {/* <div className="font-bold"> {"Midarea"} </div> */}
+      <QuoteApp />
+      {/* {Object.keys(blocks).map((id, index) => (<Box id={id} key={index} />))} */}
+    </div>;
 };
