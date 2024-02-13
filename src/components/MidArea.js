@@ -10,6 +10,7 @@ const styles = {
 };
 
 export default function MidArea() {
+  const ref = useRef(null);
   const dispatch = useDispatch();
   const blocksCount = useSelector((state) => {
     return state.midBlocks.blocks.length;
@@ -21,12 +22,16 @@ export default function MidArea() {
       if (!!monitor.didDrop() && !!monitor.getDropResult()) return;
       const payload = {
         dropped: item,
+        position: {
+          initialPosition: monitor.getInitialSourceClientOffset(),
+          finalPosition: monitor.getSourceClientOffset()
+        }
       };
       dispatch({ type: "MOVE_TO_MID", payload });
-
     },
   }));
-  return <div ref={drop} className="midarea h-full w-full" style={styles}>
+  drop(ref);
+  return <div ref={ref} className="midarea h-full w-full" style={styles}>
     <div className="font-bold"> {"Midarea"} </div>
     {new Array(blocksCount).fill(0).map((id, idx) => (<Box idx={(idx)} key={idx} />))}
   </div>;

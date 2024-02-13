@@ -4,39 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ItemTypes } from '../utils';
 import { uniqueId } from 'lodash';
 import { Block } from './Block';
+import { checkIsHoveringAbove } from '../store/midBlock';
 
 const styleId = "block-style";
-const checkIsTop = (hoverBoundingRect, clientOffset) => {
-  // Determine rectangle on screen
-  // const hoverBoundingRect = ref.current?.getBoundingClientRect();
-  // const clientOffset = monitor.getClientOffset();
-  // Get vertical middle
-  const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-  // Determine mouse position
-  // Get pixels to the top
-  const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-  // Only perform the move when the mouse has crossed half of the items height
-  // When dragging downwards, only move when the cursor is below 50%
-  // When dragging upwards, only move when the cursor is above 50%
-  // Dragging downwards
-  var addToTop = true;
-  if (
-    // dragIndex < hoverIndex && 
-    hoverClientY < hoverMiddleY) {
-    addToTop = true;
-    // // console.log("Add on top");
-    // return;
-  }
-  // Dragging upwards
-  if (
-    // dragIndex > hoverIndex && 
-    hoverClientY > hoverMiddleY) {
-    // // console.log("Add on below");
-    addToTop = false;
-    // return;
-  }
-  return addToTop;
-}
 export const DragDropContainer = ({ idx, rootIdx }) => {
   const { id, action, type } = useSelector((state) => {
     return state.midBlocks.blocks?.[rootIdx]?.children?.[idx] || {};
@@ -51,6 +21,12 @@ export const DragDropContainer = ({ idx, rootIdx }) => {
         const payload = {
           dragged: item, // item which is dragged
           dropped: { idx, rootIdx },
+          position: {
+            initialPosition: monitor.getInitialSourceClientOffset(),
+            finalPosition: monitor.getSourceClientOffset(),
+            hoverBoundingRect: ref.current?.getBoundingClientRect(),
+            clientOffset: monitor.getClientOffset(),
+          },
         };
         dispatch({ type: "MOVE_IN_CONTAINER", payload });
       },
@@ -66,18 +42,6 @@ export const DragDropContainer = ({ idx, rootIdx }) => {
     type,
     item: { idx, rootIdx },
     end: (item, monitor) => {
-
-
-      // dispatch({
-      // type: "MOVE_BLOCK", payload: {
-      //     dragged: {
-      //       id,
-      //       index,
-      //       rootId,
-      //     },
-      //     position: { delta: monitor.getDifferenceFromInitialOffset() }
-      //   }
-      // });
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -103,16 +67,12 @@ export const DragDropContainer = ({ idx, rootIdx }) => {
               }
        `;
       document.head.insertAdjacentElement('beforeend', styleTag);
-      // Cleanup when the component unmounts
-      return () => {
-        document.head.removeChild(styleTag);
-      };
     }
   }, [isDragging, rootIdx, idx]);
 
   let className = `item-${rootIdx}-${idx}`;
   if (isOver) {
-    const isOnTop = checkIsTop(ref.current?.getBoundingClientRect(), clientOffset);
+    const isOnTop = checkIsHoveringAbove({ hoverBoundingRect: ref.current?.getBoundingClientRect(), clientOffset });
     className += isOnTop ? " pt-10 bg-blue-500 " : " pb-10 bg-blue-500 "
   }
   return (<div className={className} ref={ref}>
