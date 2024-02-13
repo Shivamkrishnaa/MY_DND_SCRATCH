@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { useSelector } from 'react-redux'
 
-export const Block = ({ id, children }) => {
+export const Block = memo(({ id, children }) => {
     const { action } = useSelector((state) => {
-        return state.blocks.blocks[id];
+        return state?.blocks?.blocks?.[id] || { };
     })
     return (
         <div className="
@@ -14,4 +14,4 @@ export const Block = ({ id, children }) => {
             {children}
         </div>
     )
-}
+})

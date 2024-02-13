@@ -9,14 +9,14 @@ function SideBlocks({ index }) {
         type: type,
         item: { index },
         end: (item, monitor) => {
-            console.error('SideBlocks : useDrag : end');
-            console.log('item :', item);
-            console.log('scope item :', { index });
-            console.log('monitor.isOver():', monitor?.isOver?.());
-            console.log('monitor.didDrop():', monitor?.didDrop?.());
-            console.log('monitor.getDifferenceFromInitialOffset():', monitor?.getDifferenceFromInitialOffset?.());
-            console.log('monitor.getInitialSourceClientOffset():', monitor?.getInitialSourceClientOffset?.());
-            console.error(' "SideBlocks" :', "ADD_BLOCK");
+            // console.error('SideBlocks : useDrag : end');
+            // console.log('item :', item);
+            // console.log('scope item :', { index });
+            // console.log('monitor.isOver():', monitor?.isOver?.());
+            // console.log('monitor.didDrop():', monitor?.didDrop?.());
+            // console.log('monitor.getDifferenceFromInitialOffset():', monitor?.getDifferenceFromInitialOffset?.());
+            // console.log('monitor.getInitialSourceClientOffset():', monitor?.getInitialSourceClientOffset?.());
+            // console.error(' "SideBlocks" :', "ADD_BLOCK");
         }
     }), [index]);
     return <div ref={drag}> {action} </div>
@@ -25,7 +25,7 @@ function MySideBar() {
     const blocks = useSelector((state) => {
         return state.sideBlocks.blocks;
     });
-    return (<span className="w-60 flex-none h-full overflow-y-auto flex flex-col items-start p-2 border-r border-gray-200">
+    return (<span className="w-60 flex-none h-full overflow-y-auto flex flex-col items-start  border-r border-gray-200">
         <ul>
             {blocks.map((r, i) => <li>
                 <SideBlocks index={i} />
@@ -40,18 +40,18 @@ function MyBox() {
             isOver: !!monitor.isOver({ shallow: true }),
             canDrop: !!monitor.canDrop(),
           }),
-        //   hover: console.log,
+        //   hover: // console.log,
         drop(item, monitor) {
             if (!!monitor.didDrop() && !!monitor.getDropResult()) return;
-            console.error('andar vala DropContainer : useDrop : drop');
-            console.log('item :', item);
-            console.log('monitor.isOver(), :', monitor?.isOver());
-            console.log('monitor.getDifferenceFromInitialOffset() :', monitor?.getDifferenceFromInitialOffset());
-            console.log('monitor.getInitialSourceClientOffset() :', monitor?.getInitialSourceClientOffset());
-            console.info('monitor.didDrop() :', monitor?.didDrop());
-            console.info('monitor.getDropResult() :', monitor?.getDropResult());
-            console.info('monitor.getItemType() :', monitor?.getItemType());
-            console.error(' andar vala _CONTAINER :',  "TOP  _CONTAINER");
+            // console.error('andar vala DropContainer : useDrop : drop');
+            // console.log('item :', item);
+            // console.log('monitor.isOver(), :', monitor?.isOver());
+            // console.log('monitor.getDifferenceFromInitialOffset() :', monitor?.getDifferenceFromInitialOffset());
+            // console.log('monitor.getInitialSourceClientOffset() :', monitor?.getInitialSourceClientOffset());
+            // console.info('monitor.didDrop() :', monitor?.didDrop());
+            // console.info('monitor.getDropResult() :', monitor?.getDropResult());
+            // console.info('monitor.getItemType() :', monitor?.getItemType());
+            // console.error(' andar vala _CONTAINER :',  "TOP  _CONTAINER");
         },
       }),[]);
 
@@ -71,16 +71,16 @@ function MyMidArea() {
     drop(item, monitor) {
         
         if (!!monitor.didDrop() && !!monitor.getDropResult()) return;
-        console.log(!!monitor.didDrop() && !!monitor.getDropResult());
-        console.error('WHITE DropContainer : useDrop : drop');
-        console.log('item :', item);
-        console.log('monitor.isOver(), :', monitor?.isOver());
-        console.log('monitor.getDifferenceFromInitialOffset() :', monitor?.getDifferenceFromInitialOffset());
-        console.log('monitor.getInitialSourceClientOffset() :', monitor?.getInitialSourceClientOffset());
-        console.info('monitor.didDrop() :', monitor?.didDrop());
-        console.info('monitor.getDropResult() :', monitor?.getDropResult());
-        console.info('monitor.getItemType() :', monitor?.getItemType());
-        console.error(' WHITE _CONTAINER :',  "TOP  _CONTAINER");
+        // console.log(!!monitor.didDrop() && !!monitor.getDropResult());
+        // console.error('WHITE DropContainer : useDrop : drop');
+        // console.log('item :', item);
+        // console.log('monitor.isOver(), :', monitor?.isOver());
+        // console.log('monitor.getDifferenceFromInitialOffset() :', monitor?.getDifferenceFromInitialOffset());
+        // console.log('monitor.getInitialSourceClientOffset() :', monitor?.getInitialSourceClientOffset());
+        // console.info('monitor.didDrop() :', monitor?.didDrop());
+        // console.info('monitor.getDropResult() :', monitor?.getDropResult());
+        // console.info('monitor.getItemType() :', monitor?.getItemType());
+        // console.error(' WHITE _CONTAINER :',  "TOP  _CONTAINER");
     },
   }),[]);
 

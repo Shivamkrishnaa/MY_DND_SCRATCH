@@ -1,25 +1,61 @@
 import update from 'immutability-helper';
 import { uniqueId } from 'lodash';
+import { memo } from 'react';
 
 // function checkIsGlobalBlock(id) {
 //     return id < 10;
 // }
-export const blocksCoordinatesReducer = (state = {
+export const blocksCoordinatesReducer = ((state = {
     blocks: {
-        1: { id: 1, top: 20, left: 200+80 },
-        5: { id: 5, top: 340, left: 200 },
+        1: { id: 1, top: 20, left: 250 },
+        5: { id: 5, top: 340, left: 250 },
     }
 }, action) => {
+    
     switch (action.type) {
-        case "MOVE": 
-            const newState = {...state};
+        case "MOVE_TO_MID":{
+            var { dragged, position, uId } = action.payload;
+            const newState = { ...state };
+            if(!dragged.hasOwnProperty("rootId")) {
+                newState.blocks[uId] = {
+                    top: Math.abs(position.finalPosition.y),
+                    left: position.finalPosition.x,
+                    id: uId,
+                };
+            } else {
+                if(dragged.index == 0 || 1) {
+                    // console.warn(dragged.id,' dragged.id ');
+                    newState.blocks[dragged.id] = {
+                        ...newState.blocks?.[dragged.id] || {},
+                        top: position.finalPosition.y,
+                        left: position.finalPosition.x, 
+                    }
+                } else {
+
+                }
+            }
+            return newState;
+        }
+
+        case "MOVE_IN_CONTAINER":
+            var { dragged, dropped, uId } = action.payload;
+            const newState = { ...state };
+            if (dragged.hasOwnProperty("rootId")) {
+                if (dragged.index == 0) {
+                    delete newState.blocks[dragged.rootId]
+                }
+            } else  {
+                if (dragged.index == 0) {
+                    newState.blocks[dragged.uId] = {...newState.blocks[dragged.rootId], id: dragged.uId};
+                }
+            }
             return newState;
         case "ADD_IN_CONTAINER":
             // root block to root block
             var { dragged, dropped } = action.payload;
             var isDraggedRoot = dragged.id == dragged.rootId;
             var isDroppedRoot = dropped.id == dropped.rootId;
-            console.log(isDraggedRoot, isDroppedRoot);
+            // console.log(isDraggedRoot, isDroppedRoot);
             // if (isDraggedRoot && isDroppedRoot) {
             //     return update(state, {
             //         blocks: {
@@ -32,7 +68,7 @@ export const blocksCoordinatesReducer = (state = {
             };
         case "ADD_BLOCK":
             var { position: { didDrop }, dragged: { id, index } } = action.payload;
-            console.log(didDrop && index === undefined, didDrop, index);
+            // console.log(didDrop && index === undefined, didDrop, index);
             var { top, left } = getCorrectCoordinates(action.payload);
             if (!didDrop && index === undefined) { // item is dropped from sidebar
                 return {
@@ -76,7 +112,7 @@ export const blocksCoordinatesReducer = (state = {
         default:
             return state;
     }
-};
+});
 
 function getBlockRootPosition(rootId, blocks) {
     return blocks[rootId];
@@ -88,7 +124,7 @@ function addDelta({ left, top }, { delta: { x, y } }) {
     };
 }
 function getCorrectCoordinates(data) {
-    console.log(data);
+    // console.log(data);
     return { left: 20, top: 40 } || data.position.delta;
 }
 

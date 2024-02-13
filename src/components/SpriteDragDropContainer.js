@@ -5,7 +5,7 @@ import { ItemTypes } from '../utils'
 const style = {
     position: 'absolute',
     backgroundColor: 'white',
-    padding: '0.5rem 1rem',
+    // padding: '0.5rem 1rem',
     cursor: 'move',
 }
 

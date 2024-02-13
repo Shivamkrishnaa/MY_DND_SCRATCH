@@ -20,7 +20,7 @@ export default function PreviewArea() {
 
   const moveBox = useCallback(
     (id, left, top) => {
-      console.log(id, left, top,' ');
+      // console.log(id, left, top,' ');
       setSprite(
         update(sprite, {
           $merge: { left, top },
@@ -43,7 +43,7 @@ export default function PreviewArea() {
     }), [moveBox]);
 
   return (
-    <div className="flex-none w-full h-full p-2">
+    <div className="flex-none w-full h-full ">
       <div div ref={drop} style={styles}>
         <SpriteDragDropContainer id={sprite.id} top={sprite.top} left={sprite.left} title={sprite.title}>
           <CatSprite />

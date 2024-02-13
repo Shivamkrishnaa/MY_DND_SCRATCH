@@ -1,11 +1,9 @@
-import React, { useRef } from "react";
+import React, { memo, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Box } from "./Box";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "../utils";
 import { uniqueId } from "lodash";
-import { useForkRef } from "rooks";
-// import useForkRef from "@rooks/use-fork-ref"
 
 const getCorrectDroppedOffsetValue = (initialPosition, finalPosition) => {
   // get the container (view port) position by react ref...
@@ -32,45 +30,78 @@ const getCorrectDroppedOffsetValue = (initialPosition, finalPosition) => {
   };
 };
 const styles = {
-  transform: "rotate(0deg)",
 };
-
-export default function MidArea() {
+var c = 0;
+const MidArea = memo(() => {
   const ref = useRef();
   const dispatch = useDispatch();
+  const memoizedDispatch = useCallback((action) => {
+    dispatch(action);
+  }, [dispatch]);
+
   const blocks = useSelector((state) => {
     return state.blocksCoordinates.blocks;
   });
   
   const [{ isOver, isOverCurrent }, drop] = useDrop(() => ({
     accept: Object.values(ItemTypes),
-    drop(dragged, monitor) {
+    hover(item, monitor) {
+      
       if (!!monitor.didDrop() && !!monitor.getDropResult()) return;
-      console.error('MidArea : useDrop :');
-      console.log('dragged :', dragged);
-      console.log('monitor.isOver():', monitor?.isOver?.());
-      console.log('monitor.didDrop():', monitor?.didDrop?.());
-      console.log('monitor.getDifferenceFromInitialOffset():', monitor?.getDifferenceFromInitialOffset?.());
-      console.log('monitor.getInitialSourceClientOffset():', monitor?.getInitialSourceClientOffset?.());
+      // console.error("SHIVAMMMMM", item)
 
-      console.error('"ADD_BLOCK" :', "ADD_BLOCK");
+      // remove the item which is geeting gragged
+      // if(c >= 3) {
+      //   return;
+      // }
+      // c++;
+      // const position = {
+      //   delta: monitor.getDifferenceFromInitialOffset(),
+      //   initialPosition: monitor.getInitialSourceClientOffset(),
+      //   finalPosition: monitor.getSourceClientOffset(),
+      //   didDrop: monitor.didDrop(),
+      // };
+      if(monitor.isOver()) {
+        console.log("is over ")
+        memoizedDispatch({
+          type: "DELETE_ITEM_FROM_CONTAINER",
+          payload: {
+            dragged: item
+          },
+        });
+      }
+    },
+    drop(item, monitor) {
 
-      // console.log(monitor.isOver(), monitor.didDrop());
+      if (!!monitor.didDrop() && !!monitor.getDropResult()) return;
+      // console.error('MidArea : useDrop :');
+      // console.log('dragged :', item);
+      // console.log('monitor.isOver():', monitor?.isOver?.());
+      // console.log('monitor.didDrop():', monitor?.didDrop?.());
+      // console.log('monitor.getDifferenceFromInitialOffset():', monitor?.getDifferenceFromInitialOffset?.());
+      // console.log('monitor.getInitialSourceClientOffset():', monitor?.getInitialSourceClientOffset?.());
+      // console.log('monitor.getSourceClientOffset():', monitor?.getSourceClientOffset?.());
+
+      // console.error('"ADD_BLOCK" :', "ADD_BLOCK");
+
+      const position = {
+        delta: monitor.getDifferenceFromInitialOffset(),
+        initialPosition: monitor.getInitialSourceClientOffset(),
+        finalPosition: monitor.getSourceClientOffset(),
+        didDrop: monitor.didDrop(),
+      };
+      memoizedDispatch({
+        type: "MOVE_TO_MID",
+        payload: {
+          dragged: item,
+          position,
+          uId: item.uId
+        },
+      });
+
+      // // console.log(monitor.isOver(), monitor.didDrop());
       // if(monitor.isOver() && monitor.didDrop()) {
-      //   dragged.id = uniqueId("ms");
-      //   const position = {
-      //     delta: monitor.getDifferenceFromInitialOffset(),
-      //     initialPosition: monitor.getInitialSourceClientOffset(),
-      //     finalPosition: monitor.getSourceClientOffset(),
-      //     didDrop: monitor.didDrop(),
-      //   };
-      //   dispatch({
-      //     type: "ADD_BLOCK",
-      //     payload: {
-      //       dragged,
-      //       position,
-      //     },
-      //   });
+      //   const uId = uniqueId("ms");
       // }
     },
     collect: (monitor) => ({
@@ -80,6 +111,7 @@ export default function MidArea() {
   }));
   return <div ref={drop} className="midarea h-full w-full" style={styles}>
       <div className="font-bold"> {"Midarea"} </div>
-      {Object.keys(blocks).map((id, index) => (<Box id={id} key={index} />))}
+          {Object.keys(blocks).map((id, index) => (<Box id={id} key={index} />))}
     </div>;
-};
+},[]);
+export default MidArea;
