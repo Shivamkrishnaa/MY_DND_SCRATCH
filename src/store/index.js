@@ -10,9 +10,9 @@ const reducer = combineReducers({
     sideBlocks: sideBlockReducer,
     midBlocks: midBlockReducer,
 
-    blocks: blocksReducer,
-    blocksCoordinates: blocksCoordinatesReducer,
-    blocksMap: blockMapReducer
+    // blocks: blocksReducer,
+    // blocksCoordinates: blocksCoordinatesReducer,
+    // blocksMap: blockMapReducer
 });
 
 const middlewareEnhancer = applyMiddleware(thunk, logger);

@@ -1,52 +1,19 @@
 import React, { useRef } from 'react'
 import { useDrag } from 'react-dnd'
 import { useDispatch, useSelector } from 'react-redux';
-import { uniqueId } from 'lodash';
+import { Block } from './Block';
 
-const style = {
-    position: 'absolute',
-    padding: '0.5rem 1rem',
-};
-export const DragContainer = ({ children, id }) => {
+export const DragContainer = ({ id }) => {
+    const { uId, type, action } = useSelector((state) => {
+        return state.sideBlocks.blocks[id];
+    });
     const dispatch = useDispatch();
-    const ref = useRef();
-    const { type, action, top, left } = useSelector((state) => {
-        return state.blocks.blocks[id];
-    })
-    const [collected, drag, dragPreview] = useDrag(() => ({
+    const [, drag] = useDrag(() => ({
         type,
-        item: { id, type, action },
+        item: { id: uId, type, action },
         end: (item, monitor) => {
-
-
-            console.error('side vale box : useDrag : end');
-            console.log('item :', item);
-            console.log('scope item :', { id });
-            console.log('monitor.isOver():', monitor?.isOver?.());
-            console.log('monitor.didDrop():', monitor?.didDrop?.());
-            console.log('monitor.getDifferenceFromInitialOffset():', monitor?.getDifferenceFromInitialOffset?.());
-            console.log('monitor.getInitialSourceClientOffset():', monitor?.getInitialSourceClientOffset?.());
-            console.error(' "side vale box" :', "ADD_BLOCK");
-
-
-            console.error("DragContainer DRAG END")
-            // dragged.id = uniqueId("ms");
-            // const position = {
-            //     delta: monitor.getDifferenceFromInitialOffset(),
-            //     initialPosition: monitor.getInitialSourceClientOffset(),
-            //     finalPosition: monitor.getSourceClientOffset(),
-            //     didDrop: monitor.didDrop(),
-            // };
-            // dispatch({
-            //     type: "ADD_BLOCK",
-            //     payload: {
-            //         dragged,
-            //         position,
-            //     },
-            // });
-        }
-    }));
-    return collected.isDragging ? (
-        <div style={{...style, top, left }} ref={dragPreview} />
-    ) : (<div style={{ ...style, top, left }} ref={ref} ><div ref={drag} >{children}</div></div>);
+            monitor.didDrop() && dispatch({ "type": "SWITCH_UID", payload: { id } });
+        },
+    }), [uId, id]);
+    return (<div ref={drag}><Block action={action} uId={uId} id={id} /></div>);
 }

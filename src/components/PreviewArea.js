@@ -20,7 +20,7 @@ export default function PreviewArea() {
 
   const moveBox = useCallback(
     (id, left, top) => {
-      console.log(id, left, top,' ');
+      console.log(id, left, top, ' ');
       setSprite(
         update(sprite, {
           $merge: { left, top },
@@ -51,4 +51,4 @@ export default function PreviewArea() {
       </div>
     </div>
   );
-  }
+}
