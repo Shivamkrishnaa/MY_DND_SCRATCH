@@ -5,7 +5,7 @@ import { Block } from './Block';
 
 export const DragContainer = ({ id }) => {
     const { uId, type, action } = useSelector((state) => {
-        return state.sideBlocks.blocks[id];
+        return state.globalBlocks[id];
     });
     const dispatch = useDispatch();
     const [, drag] = useDrag(() => ({
@@ -14,6 +14,6 @@ export const DragContainer = ({ id }) => {
         end: (item, monitor) => {
             monitor.didDrop() && dispatch({ "type": "SWITCH_UID", payload: { id } });
         },
-    }), [uId, id]);
+    }), [uId, id, action]);
     return (<div ref={drag}><Block action={action} uId={uId} id={id} /></div>);
 }

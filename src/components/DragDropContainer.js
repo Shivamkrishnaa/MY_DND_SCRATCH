@@ -9,7 +9,7 @@ import { checkIsHoveringAbove } from '../store/midBlock';
 const styleId = "block-style";
 export const DragDropContainer = ({ idx, rootIdx }) => {
   const { id, action, type } = useSelector((state) => {
-    return state.midBlocks.blocks?.[rootIdx]?.children?.[idx] || {};
+    return state.blocks?.[rootIdx]?.children?.[idx] || {};
   });
   const ref = useRef(null);
   const dispatch = useDispatch();
@@ -75,8 +75,7 @@ export const DragDropContainer = ({ idx, rootIdx }) => {
     const isOnTop = checkIsHoveringAbove({ hoverBoundingRect: ref.current?.getBoundingClientRect(), clientOffset });
     className += isOnTop ? " pt-10 bg-blue-500 " : " pb-10 bg-blue-500 "
   }
-  return (<div className={className} ref={ref}>
-    {JSON.stringify(clientOffset)}
-    <Block idx={idx} rootId={rootIdx} id={id} action={action} />
-  </div>);
+  return (<span className={className} ref={ref}>
+    <Block rootId={rootIdx} id={idx} action={action} />
+  </span>);
 }

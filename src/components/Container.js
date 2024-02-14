@@ -3,7 +3,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { useSelector } from 'react-redux';
 function SideBlocks({ index }) {
     const { type, action } = useSelector((state) => {
-        return state.sideBlocks.blocks[index];
+        return state.globalBlocks[index];
     });
     const [collected, drag] = useDrag(() => ({
         type: type,
@@ -23,7 +23,7 @@ function SideBlocks({ index }) {
 }
 function MySideBar() {
     const blocks = useSelector((state) => {
-        return state.sideBlocks.blocks;
+        return state.globalBlocks;
     });
     return (<span className="w-60 flex-none h-full overflow-y-auto flex flex-col items-start p-2 border-r border-gray-200">
         <ul>

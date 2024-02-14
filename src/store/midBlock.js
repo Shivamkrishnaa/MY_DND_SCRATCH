@@ -1,5 +1,13 @@
 import update from 'immutability-helper';
 import { uniqueId } from "lodash";
+import { ItemTypes } from '../utils';
+
+const globalSubstring = "g_";
+const getGlobalUId = () => uniqueId(globalSubstring);
+
+const getNumber = (value) => isNaN(Number(value)) ? 0 : Number(value).toString();
+const getNegativeNumber = (value) => isNaN(Number(value)) ? 0 : `-${Number(Math.abs(value)).toString()}`;
+
 const isGlobalBlock = (block) => !block.hasOwnProperty("rootIdx") && !block.hasOwnProperty("idx");
 export const checkIsHoveringAbove = ({ hoverBoundingRect, clientOffset }) => {
     // Determine rectangle on screen
@@ -33,7 +41,12 @@ export const checkIsHoveringAbove = ({ hoverBoundingRect, clientOffset }) => {
     return addToTop;
 }
 
-export function midBlockReducer(state = {
+export function blockReducer(state = {
+    globalBlocks: {
+        1: { id: 1, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "MOVE", value: "10", title: "Move x steps" } },
+        2: { id: 2, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "ROTATE_CLOCKWISE", value: "10", title: "Rotate x degree" } },
+        3: { id: 3, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "ROTATE_ANTICLOCKWISE", value: "-10", title: "Move -x degree" } },
+    },
     blocks:
         [
             {
@@ -41,15 +54,7 @@ export function midBlockReducer(state = {
                 children: [{
                     id: uniqueId(),
                     type: "Motion",
-                    action: "Move 10 steps"
-                }, {
-                    id: uniqueId(),
-                    type: "Motion",
-                    action: "Move 20 steps"
-                }, {
-                    id: uniqueId(),
-                    type: "Motion",
-                    action: "Move 10 steps"
+                    action: { name: "MOVE", value: 10, title: `Move 10 steps` }
                 }],
             }
         ]
@@ -68,9 +73,9 @@ export function midBlockReducer(state = {
                     blocks: {
                         $push: [
                             {
-                                position: { 
+                                position: {
                                     top: Math.abs(position.finalPosition.y),
-                                    left: position.finalPosition.x-position.initialPosition.x,
+                                    left: position.finalPosition.x - position.initialPosition.x,
                                 },
                                 children: [
                                     {
@@ -93,7 +98,7 @@ export function midBlockReducer(state = {
                     blocks: {
                         $push: [{
                             position: {
-                                top: Math.abs(position.finalPosition.y)-15,
+                                top: Math.abs(position.finalPosition.y) - 15,
                                 left: position.finalPosition.x,
                             },
                             children,
@@ -108,7 +113,7 @@ export function midBlockReducer(state = {
                     blocks: {
                         [dropped.rootIdx]: {
                             children: {
-                                $splice: !addAfterItemIdx ? [[dropped.idx + 1, 0, {...dragged }]] : [[dropped.idx, 0, {...dragged}]],
+                                $splice: !addAfterItemIdx ? [[dropped.idx + 1, 0, { ...dragged }]] : [[dropped.idx, 0, { ...dragged }]],
                             }
                         }
                     }
@@ -123,13 +128,132 @@ export function midBlockReducer(state = {
                     blocks: {
                         [dropped.rootIdx]: {
                             children: {
-                                $splice: !addAfterItemIdx ? [[dropped.idx + 1, 0, ...children ]] : [[dropped.idx, 0, ...children ]],
+                                $splice: !addAfterItemIdx ? [[dropped.idx + 1, 0, ...children]] : [[dropped.idx, 0, ...children]],
                             }
                         }
                     }
                 })
             }
 
+            return state;
+        case "SWITCH_UID":
+            return update(state, {
+                globalBlocks: {
+                    [action.payload.id]: {
+                        uId: {
+                            $set: getGlobalUId(),
+                        }
+                    }
+                }
+            });
+        case "MODIFY_BLOCK":
+            if (action.payload.rootId === undefined) {
+
+                switch (action.payload.name) {
+                    case "MOVE":
+                        return update(state, {
+                            globalBlocks: {
+                                [action.payload.id]: {
+                                    action: {
+                                        value: { $set: getNumber(action.payload.value) },
+                                    }
+                                }
+                            }
+                        });
+                    case "ROTATE_CLOCKWISE":
+                        return update(state, {
+                            globalBlocks: {
+                                [action.payload.id]: {
+                                    action: {
+                                        value: { $set: getNumber(action.payload.value) },
+                                    }
+                                }
+                            }
+                        })
+                    case "ROTATE_ANTICLOCKWISE":
+                        return update(state, {
+                            globalBlocks: {
+                                [action.payload.id]: {
+                                    action: {
+                                        value: { $set: getNegativeNumber(action.payload.value) },
+                                    }
+                                }
+                            }
+                        })
+                    default:
+                        return update(state, {
+                            globalBlocks: {
+                                [action.payload.id]: {
+                                    action: {
+                                        value: { $set: getNumber(action.payload.value) },
+                                    }
+                                }
+                            }
+                        })
+                }
+            } else {
+
+                switch (action.payload.name) {
+                    case "MOVE":
+                        return update(state, {
+                            blocks: {
+                                [action.payload.rootId]: {
+                                    children: {
+                                        [action.payload.id]: {
+                                            action: {
+                                                value: { $set: getNumber(action.payload.value) },
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        });
+                    case "ROTATE_CLOCKWISE":
+                        return update(state, {
+                            blocks: {
+                                [action.payload.rootId]: {
+                                    children: {
+                                        [action.payload.id]: {
+                                            action: {
+                                                value: { $set: getNumber(action.payload.value) },
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        });
+                    case "ROTATE_ANTICLOCKWISE":
+                        return update(state, {
+                            blocks: {
+                                [rootIdx]: {
+                                    children: {
+                                        [idx]: {
+                                            action: {
+                                                value: { $set: getNegativeNumber(action.payload.value) },
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    default:
+                        return update(state, {
+                            blocks: {
+                                [rootIdx]: {
+                                    children: {
+                                        [idx]: {
+                                            action: {
+                                                value: { $set: (action.payload.value) },
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                }
+            }
             return state;
         default:
             return state;

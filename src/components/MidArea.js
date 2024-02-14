@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box } from "./Box";
+import DragBlock from "./DragBlock";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "../utils";
 import { uniqueId } from "lodash";
@@ -13,7 +13,7 @@ export default function MidArea() {
   const ref = useRef(null);
   const dispatch = useDispatch();
   const blocksCount = useSelector((state) => {
-    return state.midBlocks.blocks.length;
+    return state.blocks.length;
   });
   const [, drop] = useDrop(() => ({
     accept: Object.values(ItemTypes),
@@ -33,6 +33,6 @@ export default function MidArea() {
   drop(ref);
   return <div ref={ref} className="midarea h-full w-full" style={styles}>
     <div className="font-bold"> {"Midarea"} </div>
-    {new Array(blocksCount).fill(0).map((id, idx) => (<Box idx={(idx)} key={idx} />))}
+    {new Array(blocksCount).fill(0).map((id, idx) => (<DragBlock idx={(idx)} key={idx} />))}
   </div>;
 };

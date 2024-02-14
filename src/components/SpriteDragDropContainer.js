@@ -3,28 +3,27 @@ import { useDrag } from 'react-dnd'
 import { ItemTypes } from '../utils'
 
 const style = {
-    position: 'absolute',
+    position: 'relative',
     backgroundColor: 'white',
-    padding: '0.5rem 1rem',
     cursor: 'move',
 }
 
-export const SpriteDragDropContainer = ({ id, left, top, children }) => {
+export const SpriteDragDropContainer = ({ id, left, top, rotate, children }) => {
 
     const [{ isDragging }, drag] = useDrag(
         () => ({
             type: ItemTypes.SPRITE,
-            item: { id, left, top },
+            item: { id, left, top, rotate },
             collect: (monitor) => ({
                 isDragging: monitor.isDragging(),
             }),
         }),
-        [id, left, top],
+        [id, left, top, rotate],
     )
     if (isDragging) {
         return <div ref={drag} />
     }
     return (
-        <div ref={drag} className="box" style={{ ...style, left, top }} data-testid="box" > {children} </div>
+        <div ref={drag} className="box" style={{ ...style, rotate, left, top }} data-testid="box" > {children} </div>
     )
 }
