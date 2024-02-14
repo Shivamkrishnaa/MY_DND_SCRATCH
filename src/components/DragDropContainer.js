@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ItemTypes } from '../utils';
 import { uniqueId } from 'lodash';
 import { Block } from './Block';
-import { checkIsHoveringAbove } from '../store/midBlock';
+import { checkIsHoveringAbove } from '../store/block';
 
 const styleId = "block-style";
 export const DragDropContainer = ({ idx, rootIdx }) => {

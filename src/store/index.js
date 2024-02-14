@@ -1,6 +1,6 @@
 import { applyMiddleware, compose, createStore } from "redux";
 import { thunk } from "redux-thunk";
-import { blockReducer } from "./midBlock";
+import { blockReducer } from "./block";
 import logger from "redux-logger";
 
 

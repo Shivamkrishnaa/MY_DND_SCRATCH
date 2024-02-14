@@ -12,14 +12,14 @@ const styles = {
   width: "100%",
   height: "100%",
   border: "1px solid black",
-  position: "relative",
+  // position: "absolute",
 };
 
 export default function PreviewArea() {
   const ref = useRef(null);
-  const [center, setCenter] = useEffect({ x: 0, y: 0 });
+  // const [center, setCenter] = useEffect({ x: 0, y: 0 });
   const [sprite, setSprite] = useState(
-    { id: 1, top: 20, left: 80, title: 'Drag me around', rotate: 0 }
+    { id: 1, top: 20, left: 80, title: 'Drag me around', rotate: 0, transition: '' }
   );
   const blocks = useSelector((state)=>{
     const actions = [];
@@ -63,6 +63,15 @@ export default function PreviewArea() {
         case "ROTATE_ANTICLOCKWISE":
           setSprite(sprite => ({ ...sprite, rotate: (sprite.rotate+Number(r.action.value)) }));
           break;
+        case "GO_TO_COORDINATES":
+          setSprite(sprite => ({ ...sprite, left: Number(r.action.value[0]), top: Number(r.action.value[1]) }));
+          break;
+        case "GLIDE_TO_COORDINATES":
+          setSprite(sprite => ({ ...sprite, transition: `all ${r.action.value[0]}s ease-in-out`, left: Number(r.action.value[1]), top: Number(r.action.value[2]) }));
+          break;
+        case "POINT_IN_DIRECTION":
+          setSprite(sprite => ({ ...sprite, rotate: r.action.value }));
+          break;
         case "Move 20 steps":
           setSprite(sprite => ({ ...sprite, top: sprite.top, left: sprite.left+20 }));
           break;
@@ -71,23 +80,12 @@ export default function PreviewArea() {
     });
   }
   drop(ref);
-  useEffect(() => {
-    const calculateCenter = () => {
-      const box = ref.current;
-      if (box) {
-        const rect = box.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        setCenter({ x: centerX, y: centerY });
-      }
-    };
-    calculateCenter();
-  });
+  console.log(sprite,' shivam ', blocks);
   return (
-    <div className="flex-none w-full h-full p-2">
-      <button onClick={startMove}> Play </button>
+    <div style={{transform: "rotate(0deg)" }} className="flex-none w-full h-full p-2">
+      <button style={{ position: "absolute" }} className="position-absolute p-3" onClick={startMove}> Play </button>
       <div ref={ref} style={styles}>
-        <SpriteDragDropContainer id={sprite.id} rotate={(sprite.rotate+"deg")} top={sprite.top} left={sprite.left} title={sprite.title}>
+        <SpriteDragDropContainer transition={sprite.transition} sprite={sprite} id={sprite.id} rotate={(sprite.rotate+"deg")} top={`calc(50% - 7rem + ${sprite.top}px)`} left={`calc(50% - 7rem + ${sprite.left}px)`} title={sprite.title}>
           <CatSprite/>
         </SpriteDragDropContainer>
       </div>
