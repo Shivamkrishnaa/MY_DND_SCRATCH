@@ -6,6 +6,7 @@ import CatSprite from "./CatSprite";
 import { ItemTypes } from "../utils";
 import { SpriteDragDropContainer } from './SpriteDragDropContainer';
 import { useSelector } from "react-redux";
+import { CHANGE_SIZE, CHANGE_SIZE_BY, HIDE_SVG, SHOW_SVG } from "../store/block";
 
 const styles = {
   width: "100%",
@@ -14,6 +15,8 @@ const styles = {
   // position: "absolute",
 };
 
+const defaultHeight =  100.04156036376953;
+const defaultWidth =  95.17898101806641;
 export default function PreviewArea() {
   const ref = useRef(null);
   // const [center, setCenter] = useEffect({ x: 0, y: 0 });
@@ -27,7 +30,11 @@ export default function PreviewArea() {
     });
     return actions.flat();
   });
-
+  const [spriteSvg, setSpriteSvg] = useState({
+    width: defaultWidth,
+    height: defaultHeight,
+    transform: 1,
+  });
   const moveBox = useCallback(
     (id, left, top) => {
       setSprite(
@@ -83,11 +90,34 @@ export default function PreviewArea() {
         case "SET_Y_TO":
           setSprite(sprite => ({ ...sprite, top: r.action.value }));
           break;
+        case CHANGE_SIZE_BY: 
+          setSpriteSvg(spriteSvg => ({ ...spriteSvg, 
+            height: spriteSvg.height + defaultHeight*(isNaN(Number(r.action.value)) ? 1 : Number(r.action.value)),
+            width: spriteSvg.width + defaultWidth*(isNaN(Number(r.action.value)) ? 1 : Number(r.action.value)),
+            transform: (spriteSvg.transform + (isNaN(Number(r.action.value)) ? 1 : Number(r.action.value))),
+          }));
+          break;
+        case CHANGE_SIZE: 
+          setSpriteSvg(spriteSvg => ({ ...spriteSvg, 
+            height: (defaultHeight*(isNaN(Number(r.action.value)) ? 1 : Number(r.action.value)))/100,
+            width: (defaultWidth*(isNaN(Number(r.action.value)) ? 1 : Number(r.action.value)))/100,
+            transform: (isNaN(Number(r.action.value)) ? 1 : Number(r.action.value)/100),
+          }));
+          break;
+        case HIDE_SVG: 
+          setSpriteSvg(spriteSvg => ({ ...spriteSvg, 
+            display: "none",
+          }));
+          break;
+        case SHOW_SVG: 
+          setSpriteSvg(spriteSvg => ({ ...spriteSvg, 
+            display: "block",
+          }));
+          break;
         case "Move 20 steps":
           setSprite(sprite => ({ ...sprite, top: sprite.top, left: sprite.left + 20 }));
           break;
       }
-
     });
   }
   drop(ref);
@@ -95,8 +125,8 @@ export default function PreviewArea() {
     <div style={{ transform: "rotate(0deg)" }} className="flex-none w-full h-full p-2">
       <button style={{ position: "absolute" }} className="position-absolute p-3" onClick={startMove}> Play </button>
       <div ref={ref} style={styles}>
-        <SpriteDragDropContainer transition={sprite.transition} sprite={sprite} id={sprite.id} rotate={(sprite.rotate + "deg")} top={`calc(50% - 7rem + ${sprite.top}px)`} left={`calc(50% - 7rem + ${sprite.left}px)`} title={sprite.title}>
-          <CatSprite />
+        <SpriteDragDropContainer display={spriteSvg.display} transition={sprite.transition} sprite={sprite} id={sprite.id} rotate={(sprite.rotate + "deg")} top={`calc(50% - 7rem + ${sprite.top}px)`} left={`calc(50% - 7rem + ${sprite.left}px)`} title={sprite.title}>
+        <CatSprite height={spriteSvg.height} width={spriteSvg.width} transform={spriteSvg.transform} />
         </SpriteDragDropContainer>
       </div>
     </div>

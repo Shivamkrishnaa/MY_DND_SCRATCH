@@ -8,7 +8,7 @@ const style = {
     cursor: 'move',
 }
 
-export const SpriteDragDropContainer = ({ id, sprite, left, top, rotate, transition, children }) => {
+export const SpriteDragDropContainer = ({ id, sprite, left, top, rotate, transition, display, children }) => {
 
     const [{ isDragging }, drag] = useDrag(
         () => ({
@@ -24,6 +24,6 @@ export const SpriteDragDropContainer = ({ id, sprite, left, top, rotate, transit
         return <div ref={drag} />
     }
     return (
-        <div ref={drag} className="box" style={{ ...style, rotate, left, top, transition }} data-testid="box" > {children} </div>
+        <div ref={drag} className="box" style={{ ...style, display, rotate, left, top, transition }} data-testid="box" > {children} </div>
     )
 }

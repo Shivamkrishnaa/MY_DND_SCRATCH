@@ -41,6 +41,11 @@ export const checkIsHoveringAbove = ({ hoverBoundingRect, clientOffset }) => {
     return addToTop;
 }
 
+export const CHANGE_SIZE_BY = "CHANGE_SIZE_BY";
+export const CHANGE_SIZE = "CHANGE_SIZE";
+export const HIDE_SVG = "HIDE_SVG";
+export const SHOW_SVG = "SHOW_SVG";
+
 export function blockReducer(state = {
     globalBlocks: {
         1: { id: 1, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "MOVE", value: "10", title: "Move {x} steps" } },
@@ -55,6 +60,12 @@ export function blockReducer(state = {
         8: { id: 8, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "CHANGE_Y_BY", value: 0, title: "change y by" } },
         9: { id: 9, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "SET_X_TO", value: 0, title: "set x to" } },
         10: { id: 10, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "SET_Y_TO", value: 0, title: "set y to" } },
+
+        11: { id: 11, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: CHANGE_SIZE_BY, value: 1, title: "change size by" }},
+        12: { id: 12, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: CHANGE_SIZE, value: 100, title: "change size to {x} %" }},
+
+        13: { id: 13, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: HIDE_SVG, title: " hide " }},
+        14: { id: 14, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: SHOW_SVG, title: " show " }}
     },
     blocks:
         [
