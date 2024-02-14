@@ -43,12 +43,18 @@ export const checkIsHoveringAbove = ({ hoverBoundingRect, clientOffset }) => {
 
 export function blockReducer(state = {
     globalBlocks: {
-        1: { id: 1, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "MOVE", value: "10", title: "Move x steps" } },
-        2: { id: 2, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "ROTATE_CLOCKWISE", value: "10", title: "Rotate x degree" } },
-        3: { id: 3, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "ROTATE_ANTICLOCKWISE", value: "-10", title: "Move -x degree" } },
-        4: { id: 4, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "GO_TO_COORDINATES", value: [10, 10], title: "Go to x,y" } },
-        5: { id: 5, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "GLIDE_TO_COORDINATES", value: [2, 10, 10], title: "Glide t sec to x,y" } },
+        1: { id: 1, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "MOVE", value: "10", title: "Move {x} steps" } },
+        2: { id: 2, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "ROTATE_CLOCKWISE", value: "10", title: "Rotate {x} degree" } },
+        3: { id: 3, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "ROTATE_ANTICLOCKWISE", value: "-10", title: "Move {-x} degree" } },
+        4: { id: 4, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "GO_TO_COORDINATES", value: [10, 10], title: "Go to {x},{y}" } },
+        5: { id: 5, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "GLIDE_TO_COORDINATES", value: [2, 10, 10], title: "Glide t sec to {x},{y}" } },
+        
+        // single inputs
         6: { id: 6, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "POINT_IN_DIRECTION", value: 90, title: "point in direction" } },
+        7: { id: 7, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "CHANGE_X_BY", value: 0, title: "change x by" } },
+        8: { id: 8, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "CHANGE_Y_BY", value: 0, title: "change y by" } },
+        9: { id: 9, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "SET_X_TO", value: 0, title: "set x to" } },
+        10: { id: 10, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "SET_Y_TO", value: 0, title: "set y to" } },
     },
     blocks:
         [
@@ -152,7 +158,7 @@ export function blockReducer(state = {
         case "MODIFY_BLOCK":
             if (action.payload.rootId === undefined) {
                 switch (action.payload.name) {
-                    case ["MOVE",]:
+                    case ["MOVE","CHANGE_X_BY", "CHANGE_Y_BY","SET_X_TO", "SET_Y_TO"]:
                         return update(state, {
                             globalBlocks: {
                                 [action.payload.id]: {
@@ -171,7 +177,7 @@ export function blockReducer(state = {
                                     }
                                 }
                             }
-                        })
+                        });
                     case "ROTATE_ANTICLOCKWISE":
                         return update(state, {
                             globalBlocks: {
@@ -181,7 +187,7 @@ export function blockReducer(state = {
                                     }
                                 }
                             }
-                        })
+                        });
                     case "GO_TO_COORDINATES":
                         return update(state, {
                             globalBlocks: {
@@ -203,6 +209,7 @@ export function blockReducer(state = {
                             }
                         });
                     case "POINT_IN_DIRECTION":
+                        // alert();
                         return update(state, {
                             globalBlocks: {
                                 [action.payload.id]: {
@@ -221,12 +228,12 @@ export function blockReducer(state = {
                                     }
                                 }
                             }
-                        })
+                        });
                 }
             } else {
 
                 switch (action.payload.name) {
-                    case "MOVE":
+                    case ["MOVE","CHANGE_X_BY", "CHANGE_Y_BY","SET_X_TO", "SET_Y_TO"]:
                         return update(state, {
                             blocks: {
                                 [action.payload.rootId]: {
@@ -285,6 +292,7 @@ export function blockReducer(state = {
                             }
                         });
                     case "POINT_IN_DIRECTION":
+                        // alert();
                         return update(state, {
                             blocks: {
                                 [action.payload.rootId]: {

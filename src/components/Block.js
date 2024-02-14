@@ -15,14 +15,14 @@ const InputField = ({ value, handleChange, title }) => {
         <input className="p-2 h-6 w-8 text-black border rounded-md" onChange={(e) => setY(e.target.value)} value={y} />
     </div>
 }
-const PointInputField = ({ value, handleChange, title }) => {
-    const [direction, setDirection] = useState(value);
+const SingleInputField = ({ value, handleChange, title }) => {
+    const [val, setVal] = useState(value);
     useEffect(() => {
-        handleChange({ target: { value: direction } })
-    }, [value]);
+        handleChange({ target: { value: val } })
+    }, [val]);
     return <div title={title} className="flex flex-row flex-wrap justify-center items-center text-white  bg-blue-500 border-r border-gray-200 px-2 py-1 my-2 text-sm cursor-pointer">
-        <span className='p-2'>{" point in direction "}</span>
-        <input className="p-2 h-6 w-8 text-black border rounded-md" onChange={(e) => setDirection(e.target.value)} value={direction} />
+        <span className='p-2'>{` ${title} `}</span>
+        <input className="p-2 h-6 w-8 text-black border rounded-md" onChange={(e) => setVal(e.target.value)} value={val} />
     </div>
 }
 const GlideInputField = ({ value, handleChange, title }) => {
@@ -76,6 +76,6 @@ export const Block = ({ id, action, rootId }) => {
         </div> : ""}
         {action.name === "GO_TO_COORDINATES" ? <InputField title={action.title} handleChange={handleChange} value={action.value} /> : ""}
         {action.name === "GLIDE_TO_COORDINATES" ? <GlideInputField title={action.title} handleChange={handleChange} value={action.value} /> : ""}
-        {action.name === "POINT_IN_DIRECTION" ? <PointInputField title={action.title} handleChange={handleChange} value={action.value} /> : ""}
+        {[ "POINT_IN_DIRECTION", "CHANGE_X_BY", "CHANGE_Y_BY", "SET_X_TO", "SET_Y_TO" ].includes(action.name) ? <SingleInputField title={action.title} handleChange={handleChange} value={action.value} /> : ""}
     </div>)
 }
