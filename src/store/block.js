@@ -62,7 +62,7 @@ export function blockReducer(state = {
         10: { id: 10, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: "SET_Y_TO", value: 0, title: "set y to" } },
 
         11: { id: 11, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: CHANGE_SIZE_BY, value: 1, title: "change size by" }},
-        12: { id: 12, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: CHANGE_SIZE, value: 100, title: "change size to {x} %" }},
+        12: { id: 12, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: CHANGE_SIZE, value: 10, title: "change size to {x} %" }},
 
         13: { id: 13, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: HIDE_SVG, title: " hide " }},
         14: { id: 14, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: SHOW_SVG, title: " show " }}
@@ -244,7 +244,7 @@ export function blockReducer(state = {
             } else {
 
                 switch (action.payload.name) {
-                    case ["MOVE","CHANGE_X_BY", "CHANGE_Y_BY","SET_X_TO", "SET_Y_TO"]:
+                    case ["MOVE","CHANGE_X_BY", "CHANGE_Y_BY","SET_X_TO", "SET_Y_TO", CHANGE_SIZE_BY, CHANGE_SIZE]:
                         return update(state, {
                             blocks: {
                                 [action.payload.rootId]: {

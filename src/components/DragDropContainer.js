@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { useDispatch, useSelector } from 'react-redux';
 import { ItemTypes } from '../utils';
@@ -7,7 +7,7 @@ import { Block } from './Block';
 import { checkIsHoveringAbove } from '../store/block';
 
 const styleId = "block-style";
-export const DragDropContainer = ({ idx, rootIdx }) => {
+export const DragDropContainer = memo(({ idx, rootIdx }) => {
   const { id, action, type } = useSelector((state) => {
     return state.blocks?.[rootIdx]?.children?.[idx] || {};
   });
@@ -75,7 +75,8 @@ export const DragDropContainer = ({ idx, rootIdx }) => {
     const isOnTop = checkIsHoveringAbove({ hoverBoundingRect: ref.current?.getBoundingClientRect(), clientOffset });
     className += isOnTop ? " pt-10 bg-blue-500 " : " pb-10 bg-blue-500 "
   }
+  console.log(action,' action ');
   return (<span className={className} ref={ref}>
     <Block rootId={rootIdx} id={idx} action={action} />
   </span>);
-}
+})

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { memo, useCallback, useRef, useState } from "react";
 import { useDrop } from "react-dnd";
 import update from "immutability-helper";
 
@@ -7,7 +7,7 @@ import { ItemTypes } from "../utils";
 import { SpriteDragDropContainer } from './SpriteDragDropContainer';
 import { useSelector } from "react-redux";
 import { CHANGE_SIZE, CHANGE_SIZE_BY, HIDE_SVG, SHOW_SVG } from "../store/block";
-
+import ThoughtBubble from "./Bubble/ThoughBubble";
 const styles = {
   width: "100%",
   height: "100%",
@@ -17,7 +17,7 @@ const styles = {
 
 const defaultHeight =  100.04156036376953;
 const defaultWidth =  95.17898101806641;
-export default function PreviewArea() {
+ function PreviewArea() {
   const ref = useRef(null);
   // const [center, setCenter] = useEffect({ x: 0, y: 0 });
   const [sprite, setSprite] = useState(
@@ -126,9 +126,13 @@ export default function PreviewArea() {
       <button style={{ position: "absolute" }} className="position-absolute p-3" onClick={startMove}> Play </button>
       <div ref={ref} style={styles}>
         <SpriteDragDropContainer display={spriteSvg.display} transition={sprite.transition} sprite={sprite} id={sprite.id} rotate={(sprite.rotate + "deg")} top={`calc(50% - 7rem + ${sprite.top}px)`} left={`calc(50% - 7rem + ${sprite.left}px)`} title={sprite.title}>
+        <ThoughtBubble>
+        ThoughtBubbleThoughtBubbleThoughtBubbleThoughtBubble
+          </ThoughtBubble>
         <CatSprite height={spriteSvg.height} width={spriteSvg.width} transform={spriteSvg.transform} />
         </SpriteDragDropContainer>
       </div>
     </div>
   );
 }
+export default memo(PreviewArea);

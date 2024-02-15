@@ -1,9 +1,9 @@
-import React, { useRef } from 'react'
+import React, { memo, useRef } from 'react'
 import { useDrag } from 'react-dnd'
 import { useDispatch, useSelector } from 'react-redux';
 import { Block } from './Block';
 
-export const DragContainer = ({ id }) => {
+export const DragContainer = memo(({ id }) => {
     const { uId, type, action } = useSelector((state) => {
         return state.globalBlocks[id];
     });
@@ -16,4 +16,4 @@ export const DragContainer = ({ id }) => {
         },
     }), [uId, id, action]);
     return (<div ref={drag}><Block action={action} uId={uId} id={id} /></div>);
-}
+})

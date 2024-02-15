@@ -3,7 +3,7 @@ import { DragDropContainer } from './DragDropContainer';
 import { Block } from './Block';
 import { useSelector } from 'react-redux';
 
-export const BlocksContainer = memo(({ idx: rootIdx }) => {
+export const BlocksContainer = ({ idx: rootIdx }) => {
   const childrensCount = useSelector((state) => {
     return state.blocks?.[rootIdx]?.children?.length || 0;
   });
@@ -11,4 +11,4 @@ export const BlocksContainer = memo(({ idx: rootIdx }) => {
   return new Array(childrensCount).fill(childrensCount).map((id, idx) => {
     return <DragDropContainer key={idx} rootIdx={rootIdx} idx={idx} />
   });
-});
+};

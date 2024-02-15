@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { memo, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DragBlock from "./DragBlock";
 import { useDrop } from "react-dnd";
@@ -9,7 +9,7 @@ const styles = {
   transform: "rotate(0deg)",
 };
 
-export default function MidArea() {
+function MidArea() {
   const ref = useRef(null);
   const dispatch = useDispatch();
   const blocksCount = useSelector((state) => {
@@ -36,3 +36,4 @@ export default function MidArea() {
     {new Array(blocksCount).fill(0).map((id, idx) => (<DragBlock idx={(idx)} key={idx} />))}
   </div>;
 };
+export default memo(MidArea);
