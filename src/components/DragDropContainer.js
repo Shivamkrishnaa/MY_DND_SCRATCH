@@ -9,11 +9,11 @@ import { checkIsHoveringAbove } from '../store/block';
 const styleId = "block-style";
 export const DragDropContainer = memo(({ idx, rootIdx }) => {
   const { id, action, type } = useSelector((state) => {
-    return state.blocks?.[rootIdx]?.children?.[idx] || {};
+    return state.dnd.blocks?.[rootIdx]?.children?.[idx] || {};
   });
   const ref = useRef(null);
   const dispatch = useDispatch();
-  const [{ isOver, isOverCurrent, clientOffset }, drop] = useDrop(
+  const [{ isOver, clientOffset }, drop] = useDrop(
     () => ({
       accept: ItemTypes.MOTION,
       drop(item, monitor) {
@@ -75,7 +75,6 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
     const isOnTop = checkIsHoveringAbove({ hoverBoundingRect: ref.current?.getBoundingClientRect(), clientOffset });
     className += isOnTop ? " pt-10 bg-blue-500 " : " pb-10 bg-blue-500 "
   }
-  console.log(action,' action ');
   return (<span className={className} ref={ref}>
     <Block rootId={rootIdx} id={idx} action={action} />
   </span>);

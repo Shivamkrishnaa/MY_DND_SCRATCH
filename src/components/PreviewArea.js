@@ -5,9 +5,11 @@ import update from "immutability-helper";
 import CatSprite from "./CatSprite";
 import { ItemTypes } from "../utils";
 import { SpriteDragDropContainer } from './SpriteDragDropContainer';
-import { useSelector } from "react-redux";
-import { CHANGE_SIZE, CHANGE_SIZE_BY, HIDE_SVG, SHOW_SVG } from "../store/block";
-import ThoughtBubble from "./Bubble/ThoughBubble";
+import { useDispatch, useSelector } from "react-redux";
+// import { CHANGE_SIZE, CHANGE_SIZE_BY, HIDE_SVG, SAY_BUBBLE, SAY_BUBBLE_FOR, SHOW_SVG, THINK_BUBBLE, THINK_BUBBLE_FOR } from "../store/block";
+import { BubbleContainer } from "./Bubble/BubbleContainer";
+import { ActionCreators } from "redux-undo";
+
 const styles = {
   width: "100%",
   height: "100%",
@@ -15,122 +17,90 @@ const styles = {
   // position: "absolute",
 };
 
-const defaultHeight =  100.04156036376953;
-const defaultWidth =  95.17898101806641;
  function PreviewArea() {
   const ref = useRef(null);
-  // const [center, setCenter] = useEffect({ x: 0, y: 0 });
-  const [sprite, setSprite] = useState(
-    { id: 1, top: 20, left: 80, title: 'Drag me around', rotate: 0, transition: '' }
-  );
-  const blocks = useSelector((state) => {
-    const actions = [];
-    state.blocks.forEach(block => {
-      actions.push(block.children);
+  const dispatch = useDispatch();
+  const blocksIdx = useSelector((state)=>{
+    console.log(state,' state ');
+    const blocks = [];
+    state.dnd.blocks.forEach((r,i)=>{
+      const block = [];
+      r.children.forEach((r, j)=>{
+        block.push(j);
+      });
+      blocks.push(block);
     });
-    return actions.flat();
+    return blocks;
   });
-  const [spriteSvg, setSpriteSvg] = useState({
-    width: defaultWidth,
-    height: defaultHeight,
-    transform: 1,
-  });
-  const moveBox = useCallback(
-    (id, left, top) => {
-      setSprite(
-        update(sprite, {
-          $merge: { left, top },
-        }),
-      )
-    },
-    [sprite, setSprite],
-  )
+  
+  
+  // const blocks = useSelector((state) => {
+  //   const actions = [];
+  //   state.dnd.blocks.forEach(block => {
+  //     actions.push(block.children);
+  //   });
+  //   return actions.flat();
+  // });
 
   const [, drop] = useDrop(
     () => ({
       accept: ItemTypes.SPRITE,
       drop(item, monitor) {
-        const delta = monitor.getDifferenceFromInitialOffset()
-        const left = Math.round(item.left + delta.x)
-        const top = Math.round(item.top + delta.y)
-        moveBox(item.id, left, top);
+        dispatch({ type: "SPRITE_MOVE", payload: { 
+          delta: monitor.getDifferenceFromInitialOffset()} });
         return undefined;
       }
-    }), [moveBox]);
+    }), []);
+  // function clearTimers(timerIds){
+  //   while (timerIds.length) {
+  //     clearTimeout(timerIds.pop());
+  //   }
+  // }
   const startMove = () => {
-    blocks.forEach(r => {
-      switch (r.action.name) {
-        case "MOVE":
-          setSprite(sprite => ({ ...sprite, left: (sprite.left + Number(r.action.value)) }));
-          break;
-        case "ROTATE_CLOCKWISE":
-          setSprite(sprite => ({ ...sprite, rotate: (sprite.rotate + Number(r.action.value)) }));
-          break;
-        case "ROTATE_ANTICLOCKWISE":
-          setSprite(sprite => ({ ...sprite, rotate: (sprite.rotate + Number(r.action.value)) }));
-          break;
-        case "GO_TO_COORDINATES":
-          setSprite(sprite => ({ ...sprite, left: Number(r.action.value[0]), top: Number(r.action.value[1]) }));
-          break;
-        case "GLIDE_TO_COORDINATES":
-          setSprite(sprite => ({ ...sprite, transition: `all ${r.action.value[0]}s ease-in-out`, left: Number(r.action.value[1]), top: Number(r.action.value[2]) }));
-          break;
-        case "POINT_IN_DIRECTION":
-          setSprite(sprite => ({ ...sprite, rotate: r.action.value }));
-          break;
-        case "CHANGE_X_BY":
-          setSprite(sprite => ({ ...sprite, left: (sprite.left + Number(r.action.value)) }));
-          break;
-        case "CHANGE_Y_BY":
-          setSprite(sprite => ({ ...sprite, top: (sprite.top + Number(r.action.value)) }));
-          break;
-        case "SET_X_TO":
-          setSprite(sprite => ({ ...sprite, left: r.action.value }));
-          break;
-        case "SET_Y_TO":
-          setSprite(sprite => ({ ...sprite, top: r.action.value }));
-          break;
-        case CHANGE_SIZE_BY: 
-          setSpriteSvg(spriteSvg => ({ ...spriteSvg, 
-            height: spriteSvg.height + defaultHeight*(isNaN(Number(r.action.value)) ? 1 : Number(r.action.value)),
-            width: spriteSvg.width + defaultWidth*(isNaN(Number(r.action.value)) ? 1 : Number(r.action.value)),
-            transform: (spriteSvg.transform + (isNaN(Number(r.action.value)) ? 1 : Number(r.action.value))),
-          }));
-          break;
-        case CHANGE_SIZE: 
-          setSpriteSvg(spriteSvg => ({ ...spriteSvg, 
-            height: (defaultHeight*(isNaN(Number(r.action.value)) ? 1 : Number(r.action.value)))/100,
-            width: (defaultWidth*(isNaN(Number(r.action.value)) ? 1 : Number(r.action.value)))/100,
-            transform: (isNaN(Number(r.action.value)) ? 1 : Number(r.action.value)/100),
-          }));
-          break;
-        case HIDE_SVG: 
-          setSpriteSvg(spriteSvg => ({ ...spriteSvg, 
-            display: "none",
-          }));
-          break;
-        case SHOW_SVG: 
-          setSpriteSvg(spriteSvg => ({ ...spriteSvg, 
-            display: "block",
-          }));
-          break;
-        case "Move 20 steps":
-          setSprite(sprite => ({ ...sprite, top: sprite.top, left: sprite.left + 20 }));
-          break;
-      }
+    blocksIdx.forEach((block, rootIdx)=>{
+      block.forEach(idx => {
+        dispatch({
+          type: "PLAY",
+          payload: { idx, rootIdx },
+        });
+      })
     });
   }
   drop(ref);
+  function undo() {
+    dispatch(ActionCreators.undo({ reducerName: 'sprite' })) // undo the last action
+  }
+  function redo() {
+    dispatch(ActionCreators.redo({ reducerName: 'sprite'  })) // undo the last action
+  }
   return (
     <div style={{ transform: "rotate(0deg)" }} className="flex-none w-full h-full p-2">
-      <button style={{ position: "absolute" }} className="position-absolute p-3" onClick={startMove}> Play </button>
+      <div className="flex flex-row whitespace-nowrap absolute border border-black border-solid border-1" >
+        <button className="position-absolute p-3" onClick={startMove}> Play </button>
+        <button className="position-absolute p-3" onClick={undo}> Undo </button>
+        <button className="position-absolute p-3" onClick={redo}> Redo </button>
+      </div>
       <div ref={ref} style={styles}>
-        <SpriteDragDropContainer display={spriteSvg.display} transition={sprite.transition} sprite={sprite} id={sprite.id} rotate={(sprite.rotate + "deg")} top={`calc(50% - 7rem + ${sprite.top}px)`} left={`calc(50% - 7rem + ${sprite.left}px)`} title={sprite.title}>
-        <ThoughtBubble>
-        ThoughtBubbleThoughtBubbleThoughtBubbleThoughtBubble
-          </ThoughtBubble>
-        <CatSprite height={spriteSvg.height} width={spriteSvg.width} transform={spriteSvg.transform} />
+        <SpriteDragDropContainer 
+
+        // display={spriteSvg.c} 
+        // transition={sprite.transition} 
+        // sprite={sprite} id={sprite.id} 
+        // rotate={(sprite.rotate + "deg")} 
+        // top={`calc(50% - 7rem + ${sprite.top}px)`} 
+        // left={`calc(50% - 7rem + ${sprite.left}px)`} 
+        // title={sprite.title}
+        >
+          <CatSprite />
         </SpriteDragDropContainer>
+      <BubbleContainer 
+      // text={spriteSvg.bubble.text} 
+      // type={spriteSvg.bubble.type} 
+      // top={`calc(50% - 15rem + ${sprite.top}px)`}
+
+      // left={`calc(50% - 14.5rem + ${sprite.left}px + ${spriteSvg.width}px)`} 
+      />
+      {/* <BubbleTimeContainer handleChange={()=>setSpriteSvg(spriteSvg=>({ ...spriteSvg, bubble: { ...spriteSvg.bubble, time: 0 }}))} time={spriteSvg.bubble.time} text={spriteSvg.bubble.text} type={spriteSvg.bubble.type} top={`calc(50% - 15rem + ${sprite.top}px)`} left={`calc(50% - 14.5rem + ${sprite.left}px + ${spriteSvg.width}px)`} /> */}
       </div>
     </div>
   );

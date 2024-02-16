@@ -5,15 +5,11 @@ import { Block } from './Block';
 
 export const DragContainer = memo(({ id }) => {
     const { uId, type, action } = useSelector((state) => {
-        return state.globalBlocks[id];
+        return state.dnd.globalBlocks[id];
     });
-    const dispatch = useDispatch();
     const [, drag] = useDrag(() => ({
         type,
-        item: { id: uId, type, action },
-        end: (item, monitor) => {
-            monitor.didDrop() && dispatch({ "type": "SWITCH_UID", payload: { id } });
-        },
+        item: { id: uId, idx: id, type, action },
     }), [uId, id, action]);
-    return (<div ref={drag}><Block action={action} uId={uId} id={id} /></div>);
+    return (<div className='p-3' ref={drag}><Block action={action} uId={uId} id={id} /></div>);
 })

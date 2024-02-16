@@ -19966,7 +19966,7 @@ const DragContainer = _ref => {
     type,
     action
   } = react_redux_useSelector(state => {
-    return state.globalBlocks[id];
+    return state.dnd.globalBlocks[id];
   });
   const dispatch = useDispatch();
   const [, drag] = useDrag_useDrag(() => ({
@@ -20509,7 +20509,7 @@ const DragDropContainer = _ref => {
     type
   } = react_redux_useSelector(state => {
     var _state$midBlocks$bloc;
-    return ((_state$midBlocks$bloc = state.blocks) === null || _state$midBlocks$bloc === void 0 || (_state$midBlocks$bloc = _state$midBlocks$bloc[rootIdx]) === null || _state$midBlocks$bloc === void 0 || (_state$midBlocks$bloc = _state$midBlocks$bloc.children) === null || _state$midBlocks$bloc === void 0 ? void 0 : _state$midBlocks$bloc[idx]) || {};
+    return ((_state$midBlocks$bloc = state.dnd.blocks) === null || _state$midBlocks$bloc === void 0 || (_state$midBlocks$bloc = _state$midBlocks$bloc[rootIdx]) === null || _state$midBlocks$bloc === void 0 || (_state$midBlocks$bloc = _state$midBlocks$bloc.children) === null || _state$midBlocks$bloc === void 0 ? void 0 : _state$midBlocks$bloc[idx]) || {};
   });
   const ref = (0,react.useRef)(null);
   const dispatch = useDispatch();
@@ -20605,7 +20605,7 @@ const BlocksContainer = /*#__PURE__*/(0,react.memo)(_ref => {
   } = _ref;
   const childrensCount = react_redux_useSelector(state => {
     var _state$midBlocks$bloc;
-    return ((_state$midBlocks$bloc = state.blocks) === null || _state$midBlocks$bloc === void 0 || (_state$midBlocks$bloc = _state$midBlocks$bloc[rootIdx]) === null || _state$midBlocks$bloc === void 0 || (_state$midBlocks$bloc = _state$midBlocks$bloc.children) === null || _state$midBlocks$bloc === void 0 ? void 0 : _state$midBlocks$bloc.length) || 0;
+    return ((_state$midBlocks$bloc = state.dnd.blocks) === null || _state$midBlocks$bloc === void 0 || (_state$midBlocks$bloc = _state$midBlocks$bloc[rootIdx]) === null || _state$midBlocks$bloc === void 0 || (_state$midBlocks$bloc = _state$midBlocks$bloc.children) === null || _state$midBlocks$bloc === void 0 ? void 0 : _state$midBlocks$bloc.length) || 0;
   });
   if (!childrensCount) return /*#__PURE__*/react.createElement(react.Fragment, null);
   return new Array(childrensCount).fill(childrensCount).map((id, idx) => {
@@ -20629,7 +20629,7 @@ const Box = _ref => {
     left
   } = react_redux_useSelector(state => {
     var _state$midBlocks;
-    return ((_state$midBlocks = state.midBlocks) === null || _state$midBlocks === void 0 || (_state$midBlocks = _state$midBlocks.blocks) === null || _state$midBlocks === void 0 || (_state$midBlocks = _state$midBlocks[idx]) === null || _state$midBlocks === void 0 ? void 0 : _state$midBlocks.position) || {};
+    return ((_state$midBlocks = state.dnd.midBlocks) === null || _state$midBlocks === void 0 || (_state$midBlocks = _state$midBlocks.blocks) === null || _state$midBlocks === void 0 || (_state$midBlocks = _state$midBlocks[idx]) === null || _state$midBlocks === void 0 ? void 0 : _state$midBlocks.position) || {};
   });
   return /*#__PURE__*/react.createElement("div", {
     className: "absolute",
@@ -20657,7 +20657,7 @@ function MidArea() {
   const ref = (0,react.useRef)(null);
   const dispatch = useDispatch();
   const blocksCount = react_redux_useSelector(state => {
-    return state.blocks.length;
+    return state.dnd.blocks.length;
   });
   const [, drop] = useDrop_useDrop(() => ({
     accept: Object.values(utils_ItemTypes),
@@ -20966,7 +20966,7 @@ function SideBlocks(_ref) {
     type,
     action
   } = useSelector(state => {
-    return state.globalBlocks[index];
+    return state.dnd.globalBlocks[index];
   });
   const [collected, drag] = useDrag(() => ({
     type: type,
@@ -20993,7 +20993,7 @@ function SideBlocks(_ref) {
 }
 function MySideBar() {
   const blocks = useSelector(state => {
-    return state.globalBlocks;
+    return state.dnd.globalBlocks;
   });
   return /*#__PURE__*/React.createElement("span", {
     className: "w-60 flex-none h-full overflow-y-auto flex flex-col items-start p-2 border-r border-gray-200"
@@ -21751,8 +21751,8 @@ var redux_$$observable = (function () {
 
 /**
  * These are private action types reserved by Redux.
- * For any unknown actions, you must return the current state.
- * If the current state is undefined, you must return the initial state.
+ * For any unknown actions, you must return the current state.dnd.
+ * If the current state is undefined, you must return the initial state.dnd.
  * Do not reference these action types directly in your code.
  */
 var redux_randomString = function randomString() {
@@ -22031,7 +22031,7 @@ function redux_createStore(reducer, preloadedState, enhancer) {
     return action;
   }
   /**
-   * Replaces the reducer currently used by the store to calculate the state.
+   * Replaces the reducer currently used by the store to calculate the state.dnd.
    *
    * You might need this if your app implements code splitting and you want to
    * load some of the reducers dynamically. You might also need this if you
@@ -22049,7 +22049,7 @@ function redux_createStore(reducer, preloadedState, enhancer) {
 
     currentReducer = nextReducer; // This action has a similiar effect to ActionTypes.INIT.
     // Any reducers that existed in both the new and old rootReducer
-    // will receive the previous state. This effectively populates
+    // will receive the previous state.dnd. This effectively populates
     // the new state tree with any relevant data from the old one.
 
     dispatch({
@@ -22098,7 +22098,7 @@ function redux_createStore(reducer, preloadedState, enhancer) {
       return this;
     }, _ref;
   } // When a store is created, an "INIT" action is dispatched so that every
-  // reducer returns their initial state. This effectively populates
+  // reducer returns their initial state.dnd. This effectively populates
   // the initial state tree.
 
 
@@ -22128,7 +22128,7 @@ function redux_createStore(reducer, preloadedState, enhancer) {
  * @param {Function} reducer A function that returns the next state tree, given
  * the current state tree and the action to handle.
  *
- * @param {any} [preloadedState] The initial state. You may optionally specify it
+ * @param {any} [preloadedState] The initial state.dnd. You may optionally specify it
  * to hydrate the state from the server in universal apps, or to restore a
  * previously serialized user session.
  * If you use `combineReducers` to produce the root reducer function, this must be
@@ -22927,7 +22927,7 @@ class DragDropMonitorImpl {
         let prevStateId = this.store.getState().stateId;
         const handleChange = ()=>{
             const state = this.store.getState();
-            const currentStateId = state.stateId;
+            const currentStateId = state.dnd.stateId;
             try {
                 const canSkipListener = currentStateId === prevStateId || currentStateId === prevStateId + 1 && !areDirty(state.dirtyHandlerIds, handlerIds);
                 if (!canSkipListener) {
@@ -24788,7 +24788,7 @@ class HTML5BackendImpl {
                 const { captureDraggingState  } = this.getCurrentSourcePreviewNodeOptions();
                 if (!captureDraggingState) {
                     // Usually we want to publish it in the next tick so that browser
-                    // is able to screenshot the current (not yet dragging) state.
+                    // is able to screenshot the current (not yet dragging) state.dnd.
                     //
                     // It also neatly avoids a situation where render() returns null
                     // in the same tick for the source element, and browser freaks out.

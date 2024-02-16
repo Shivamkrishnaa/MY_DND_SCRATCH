@@ -6,7 +6,7 @@ import { BlocksContainer } from './BlockContainer';
 
 const DragBlock = ({ idx }) => {
   const { top, left } = useSelector((state) => {
-    return state.blocks?.[idx]?.position || {};
+    return state.dnd.blocks?.[idx]?.position || {};
   });
   return (
     <div className="absolute" style={{ top: `calc(${top}px - ${2}rem)`, left: `calc(${left}px - ${15}rem)` }}>

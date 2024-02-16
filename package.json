@@ -17,6 +17,7 @@
     "redux": "^5.0.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^3.1.0",
+    "redux-undo": "^1.1.0",
     "rooks": "^7.14.1",
     "tailwindcss": "^2.0.1"
   },

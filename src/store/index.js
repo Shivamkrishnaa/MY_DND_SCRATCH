@@ -1,12 +1,22 @@
-import { applyMiddleware, compose, createStore } from "redux";
-import { thunk } from "redux-thunk";
+import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import { blockReducer } from "./block";
 import logger from "redux-logger";
+import { thunk } from "redux-thunk";
+import { previewReducer } from "./preview";
+import undoable from 'redux-undo';
 
+
+
+const rootReducer = combineReducers({
+  dnd: blockReducer,
+  sprite: undoable(previewReducer, {
+    ignoreInitialState: false,
+  }),
+});
 
 const middlewareEnhancer = applyMiddleware(thunk, logger);
 const composedEnhancers = compose(middlewareEnhancer);
 
-const store = createStore(blockReducer, undefined, composedEnhancers);
+const store = createStore(rootReducer, undefined, composedEnhancers);
 
 export default store;

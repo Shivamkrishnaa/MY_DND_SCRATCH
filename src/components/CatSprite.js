@@ -1,9 +1,17 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
-export default function CatSprite({ title, height, width, transform }) {
+export default function CatSprite() {
+  const { height, width, transform } = useSelector((state)=>{
+    return {
+      height: state.sprite.present.sprite.height,
+      width: state.sprite.present.sprite.width,
+      transform: state.sprite.present.sprite.transform,
+  };
+  });
   return (
     <svg
-      xlinkTitle={title}
+      xlinkTitle={"Cat sprite"}
       xmlns="http://www.w3.org/2000/svg"
       width={width}
       height={height}
