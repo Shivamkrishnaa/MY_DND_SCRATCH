@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import './Bubble.css'
 import { useSelector } from 'react-redux';
 export const BubbleContainer = () => {
@@ -9,6 +9,7 @@ export const BubbleContainer = () => {
     display,
     text,
     type,
+    width,
   } = useSelector((state) => {
     return {
       left: state.sprite.present.sprite.left,
@@ -18,18 +19,18 @@ export const BubbleContainer = () => {
       display: state.sprite.present.sprite.display,
       text: state.sprite.present.sprite.bubble.text,
       type: state.sprite.present.sprite.bubble.type,
+      width: state.sprite.present.sprite.width,
     };
   });
   if (!text) return <></>;
-  
   return <div className="bubble__container"
     style={{
       position: "absolute",
-      top: `calc(50% - 15rem + ${top}px)`,
+      top: `calc(50% - 14rem + ${top}px)`,
       left: `calc(50% - 14.5rem + ${left}px + ${width}px)`,
       display,
       transition,
     }}>
-    <p className='bubble thought'>{text}</p>
+    <p className={`bubble `}>{text}</p>
   </div>;
 }

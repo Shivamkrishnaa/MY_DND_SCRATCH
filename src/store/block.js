@@ -81,9 +81,9 @@ const initialGlobalState = {
     13: { id: 13, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: HIDE_SVG, title: " hide  " } },
     14: { id: 14, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: SHOW_SVG, title: " show  " } },
     15: { id: 15, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: THINK_BUBBLE, value: "hmmm...", title: " think  {x} " } },
-    16: { id: 16, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: THINK_BUBBLE_FOR, value: ["hmmm...", 1], title: " think  {x} for {x} seconds " } },
-    17: { id: 17, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: SAY_BUBBLE, value: "Hello", title: " show  {x} " } },
-    18: { id: 18, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: SAY_BUBBLE_FOR, value: ["Hello", 1], title: " show  {x} for  {y} seconds " } },
+    // 16: { id: 16, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: THINK_BUBBLE_FOR, value: ["hmmm...", 1], title: " think  {x} for {x} seconds " } },
+    16: { id: 16, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: SAY_BUBBLE, value: "Hello", title: " say  {x} " } },
+    // 18: { id: 18, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: SAY_BUBBLE_FOR, value: ["Hello", 1], title: " say  {x} for  {x} seconds " } },
 };
 
 const defaultHeight = 100.04156036376953;
@@ -237,7 +237,6 @@ export function blockReducer(state = {
                             }
                         });
                     case "POINT_IN_DIRECTION":
-                        // alert();
                         return update(state, {
                             globalBlocks: {
                                 [action.payload.id]: {
@@ -320,7 +319,6 @@ export function blockReducer(state = {
                             }
                         });
                     case "POINT_IN_DIRECTION":
-                        // alert();
                         return update(state, {
                             blocks: {
                                 [action.payload.rootId]: {
@@ -350,6 +348,28 @@ export function blockReducer(state = {
                         });
                 }
             };
+        case "DELETE":
+            if(action.payload.idx === 0) {
+                return update(state,
+                    {
+                        blocks: {
+                            $splice: [[
+                                action.payload.idx, 1
+                            ]]
+                        }
+                    }
+                );
+            } else {
+                return update(state, {
+                    blocks: {
+                        [action.payload.rootIdx] : {
+                            children: [[
+                                action.payload.idx
+                            ]]
+                        }
+                    }
+                });
+            }
         case "PLAY":
             localStorage.setItem("b", JSON.stringify(state.blocks));
             return state;

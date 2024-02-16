@@ -42,6 +42,13 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
     type,
     item: { idx, rootIdx },
     end: (item, monitor) => {
+      if (!monitor.didDrop()) {
+        const payload = {
+          idx, rootIdx
+        };
+        dispatch({ type: "DELETE", payload });
+      }
+
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),

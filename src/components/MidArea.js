@@ -30,19 +30,10 @@ function MidArea() {
     },
   }));
   drop(ref);
-  function undo() {
-    dispatch(ActionCreators.undo({ reducerName: 'dnd' })) // undo the last action
-  }
-  function redo() {
-    dispatch(ActionCreators.redo({ reducerName: 'dnd'  })) // undo the last action
-  }
+  
   return <div ref={ref} className="m-2 midarea h-full w-full" style={styles}>
       <div className="flex flex-row items-start justify-between p-2" >
         <div className="grow font-bold"> {"Midarea"} </div>
-        <div className="flex-none grow-0 w-14 border border-black border-solid border-1">
-          <button className="p-2" onClick={undo}>Undo</button>
-          <button className="p-2" onClick={redo}>Redo</button>
-        </div>
       </div>
       {new Array(blocksCount).fill(0).map((id, idx) => (<DragBlock idx={(idx)} key={idx} />))}
   </div>;
