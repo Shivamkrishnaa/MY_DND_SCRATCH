@@ -1,5 +1,5 @@
 import update from 'immutability-helper';
-import { uniqueId } from "lodash";
+import { cloneDeep, uniqueId } from "lodash";
 import { ItemTypes } from '../utils';
 
 const globalSubstring = "g_";
@@ -168,20 +168,22 @@ export function blockReducer(state = {
                     }
                 })
             } else {
-                const newState = { ...state };
+                const newState = cloneDeep({ ...state });
                 const children = newState.blocks[dragged.rootIdx].children.splice(dragged.idx);
-                if (newState.blocks[dragged.rootIdx].children.length == 0) {
-                    newState.blocks.splice(dragged.rootIdx, 1);
-                }
-                return update(state, {
+                const newState2 =  update(newState, {
                     blocks: {
                         [dropped.rootIdx]: {
                             children: {
-                                $splice: !addAfterItemIdx ? [[dropped.idx + 1, 0, ...children]] : [[dropped.idx, 0, ...children]],
+                                $splice: !addAfterItemIdx ? [[(dropped.idx + 1), 0, ...children]] : [[dropped.idx, 0, ...children]],
                             }
                         }
                     }
-                })
+                });
+                // remove empty block
+                if (newState2.blocks[dragged.rootIdx].children.length == 0) {
+                    newState2.blocks.splice(dragged.rootIdx, 1);
+                }
+                return newState2;
             };
         case "MODIFY_BLOCK":
             if (action.payload.rootId === undefined) {
