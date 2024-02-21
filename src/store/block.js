@@ -11,6 +11,7 @@ const getNegativeNumber = (value) => isNaN(Number(value)) ? 0 : `-${Number(Math.
 
 const isGlobalBlock = (block) => !block.hasOwnProperty("rootIdx");
 export const checkIsHoveringAbove = ({ hoverBoundingRect, clientOffset }) => {
+console.log('hoverBoundingRect, clientOffset :', hoverBoundingRect, clientOffset);
     // Determine rectangle on screen
     // const hoverBoundingRect = ref.current?.getBoundingClientRect();
     // const clientOffset = monitor.getClientOffset();
@@ -41,6 +42,7 @@ export const checkIsHoveringAbove = ({ hoverBoundingRect, clientOffset }) => {
 }
 
 export const MOVE = "MOVE";
+export const PLAY = "PLAY";
 export const ROTATE_CLOCKWISE = "ROTATE_CLOCKWISE";
 export const ROTATE_ANTICLOCKWISE = "ROTATE_ANTICLOCKWISE";
 export const GO_TO_COORDINATES = "GO_TO_COORDINATES";
@@ -84,6 +86,7 @@ const initialGlobalState = {
     // 16: { id: 16, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: THINK_BUBBLE_FOR, value: ["hmmm...", 1], title: " think  {x} for {x} seconds " } },
     16: { id: 16, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: SAY_BUBBLE, value: "Hello", title: " say  {x} " } },
     // 18: { id: 18, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: SAY_BUBBLE_FOR, value: ["Hello", 1], title: " say  {x} for  {x} seconds " } },
+    17: { id: 17, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "yellow", name: PLAY, title: "When 🇧🇷 clicked" } },
 };
 
 const defaultHeight = 100.04156036376953;
@@ -157,12 +160,19 @@ export function blockReducer(state = {
             };
         case "MOVE_IN_CONTAINER":
             let addAfterItemIdx = checkIsHoveringAbove(position);
+            console.log('position :', position.hoverBoundingRect, position.clientOffset);
+            console.log('addAfterItemIdx :', addAfterItemIdx);
             if (isGlobalBlock(dragged)) {
                 return update(state, {
                     blocks: {
                         [dropped.rootIdx]: {
                             children: {
-                                $splice: !addAfterItemIdx ? [[dropped.idx + 1, 0, { ...dragged }]] : [[dropped.idx, 0, { ...dragged }]],
+                                $splice: !addAfterItemIdx ? [
+                                    [dropped.idx + 1, 0, { ...dragged }]
+                                ] :
+                                    [
+                                        [dropped.idx, 0, { ...dragged }]
+                                    ],
                             }
                         }
                     }
@@ -170,11 +180,15 @@ export function blockReducer(state = {
             } else {
                 const newState = cloneDeep({ ...state });
                 const children = newState.blocks[dragged.rootIdx].children.splice(dragged.idx);
-                const newState2 =  update(newState, {
+                const newState2 = update(newState, {
                     blocks: {
                         [dropped.rootIdx]: {
                             children: {
-                                $splice: !addAfterItemIdx ? [[(dropped.idx + 1), 0, ...children]] : [[dropped.idx, 0, ...children]],
+                                $splice: !addAfterItemIdx ? [
+                                    [(dropped.idx + 1), 0, ...children]
+                                ] : [[
+                                    dropped.idx, 0, ...children]
+                                ],
                             }
                         }
                     }
@@ -351,7 +365,7 @@ export function blockReducer(state = {
                 }
             };
         case "DELETE":
-            if(action.payload.idx === 0) {
+            if (action.payload.idx === 0) {
                 return update(state,
                     {
                         blocks: {
@@ -364,7 +378,7 @@ export function blockReducer(state = {
             } else {
                 return update(state, {
                     blocks: {
-                        [action.payload.rootIdx] : {
+                        [action.payload.rootIdx]: {
                             children: [[
                                 action.payload.idx
                             ]]

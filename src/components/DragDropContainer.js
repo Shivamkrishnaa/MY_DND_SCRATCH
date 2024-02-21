@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ItemTypes } from '../utils';
 import { uniqueId } from 'lodash';
 import { Block } from './Block';
-import { checkIsHoveringAbove } from '../store/block';
+import { PLAY, checkIsHoveringAbove } from '../store/block';
 
 const styleId = "block-style";
 export const DragDropContainer = memo(({ idx, rootIdx }) => {
@@ -13,11 +13,23 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
   });
   const ref = useRef(null);
   const dispatch = useDispatch();
-  const [{ isOver, clientOffset }, drop] = useDrop(
+  const [{ isOver, item, clientOffset }, drop] = useDrop(
     () => ({
       accept: ItemTypes.BLOCK,
       drop(item, monitor) {
         if (!!monitor.didDrop() && !!monitor.getDropResult()) return;
+        console.log(`{
+          initialPosition: monitor.getInitialSourceClientOffset(),
+          finalPosition: monitor.getSourceClientOffset(),
+          hoverBoundingRect: ref.current?.getBoundingClientRect(),
+          clientOffset: monitor.getClientOffset(),
+        } :`, {
+          getDifferenceFromInitialOffset: monitor.getDifferenceFromInitialOffset(),
+          initialPosition: monitor.getInitialSourceClientOffset(),
+          finalPosition: monitor.getSourceClientOffset(),
+          hoverBoundingRect: ref.current?.getBoundingClientRect(),
+          clientOffset: monitor.getClientOffset(),
+        });
         const payload = {
           dragged: item, // item which is dragged
           dropped: { idx, rootIdx },
@@ -32,6 +44,7 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
       },
       collect: (monitor) => ({
         isOver: monitor.isOver(),
+        item: monitor.getItem(),
         isOverCurrent: monitor.isOver({ shallow: !true }),
         clientOffset: monitor.getClientOffset(),
       }),
@@ -79,8 +92,18 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
 
   let className = `item-${rootIdx}-${idx}`;
   if (isOver) {
-    const isOnTop = checkIsHoveringAbove({ hoverBoundingRect: ref.current?.getBoundingClientRect(), clientOffset });
-    className += isOnTop ? " pt-10 bg-blue-500 " : " pb-10 bg-blue-500 "
+    const position = { hoverBoundingRect: ref.current?.getBoundingClientRect(), clientOffset };
+    const isOnTop = checkIsHoveringAbove(position);
+    console.log('position :', position.hoverBoundingRect, position.clientOffset);
+    console.log('isOnTop :', isOnTop);
+    console.log('idx :', idx);
+    if(item?.action?.name == PLAY && (idx != 0) ) {
+      if(!isOnTop) {
+        className = "";
+      }
+    } else {
+      className += isOnTop ? " pt-10 bg-blue-500 " : " pb-10 bg-blue-500 ";
+    }
   }
   return (<span className={className} ref={ref}>
     <Block rootId={rootIdx} id={idx} action={action} />
