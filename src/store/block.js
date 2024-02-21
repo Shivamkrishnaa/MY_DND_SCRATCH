@@ -52,7 +52,6 @@ export const SET_X_TO = "SET_X_TO";
 export const SET_Y_TO = "SET_Y_TO";
 
 
-
 export const CHANGE_SIZE_BY = "CHANGE_SIZE_BY";
 export const CHANGE_SIZE = "CHANGE_SIZE";
 export const HIDE_SVG = "HIDE_SVG";
@@ -61,6 +60,7 @@ export const THINK_BUBBLE = "THINK_BUBBLE";
 export const SAY_BUBBLE = "SAY_BUBBLE";
 export const THINK_BUBBLE_FOR = "THINK_BUBBLE_FOR";
 export const SAY_BUBBLE_FOR = "SAY_BUBBLE_FOR";
+export const PLAY = "PLAY";
 const initialGlobalState = {
     1: { id: 1, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { name: MOVE, value: "10", title: "Move {x} steps" } },
     2: { id: 2, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { icon: "redo", name: ROTATE_CLOCKWISE, value: "10", title: "Rotate {x} degree" } },
@@ -83,7 +83,7 @@ const initialGlobalState = {
     15: { id: 15, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: THINK_BUBBLE, value: "hmmm...", title: " think  {x} " } },
     // 16: { id: 16, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: THINK_BUBBLE_FOR, value: ["hmmm...", 1], title: " think  {x} for {x} seconds " } },
     16: { id: 16, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: SAY_BUBBLE, value: "Hello", title: " say  {x} " } },
-    // 18: { id: 18, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: SAY_BUBBLE_FOR, value: ["Hello", 1], title: " say  {x} for  {x} seconds " } },
+    17: { id: 17, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "yellow", name: PLAY, title: " Play " } },
 };
 
 const defaultHeight = 100.04156036376953;
@@ -91,14 +91,14 @@ const defaultWidth = 95.17898101806641;
 export function blockReducer(state = {
     globalBlocks: initialGlobalState,
     blocks: [
-        {
-            position: { top: 120, left: 300 },
-            children: [{
-                id: uniqueId(),
-                type: "Motion",
-                action: initialGlobalState[1].action
-            }],
-        }
+        // {
+        //     position: { top: 120, left: 300 },
+        //     children: [{
+        //         id: uniqueId(),
+        //         type: "Motion",
+        //         action: initialGlobalState[1].action
+        //     }],
+        // }
     ],
 }
     , action = { payload: {} }) {
@@ -373,7 +373,15 @@ export function blockReducer(state = {
                 });
             }
         case "PLAY":
-            localStorage.setItem("b", JSON.stringify(state.blocks));
+            const playBlocks = state.blocks.filter(r=>{
+                console.log(r,' r = ',r?.children?.[0]?.action?.name);
+                return r?.children?.[0]?.action?.name === "PLAY"
+            });
+            console.log(playBlocks,' playBlocks ', playBlocks);
+            localStorage.setItem("b", JSON.stringify(state.blocks.filter(r=>{
+                console.log(r,' r = ',r?.children?.[0]?.action?.name);
+                return r?.children?.[0]?.action?.name === "PLAY"
+            })));
             return state;
         default:
             return state;
