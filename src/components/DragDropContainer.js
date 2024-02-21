@@ -15,7 +15,7 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
   const dispatch = useDispatch();
   const [{ isOver, clientOffset }, drop] = useDrop(
     () => ({
-      accept: ItemTypes.MOTION,
+      accept: ItemTypes.BLOCK,
       drop(item, monitor) {
         if (!!monitor.didDrop() && !!monitor.getDropResult()) return;
         const payload = {

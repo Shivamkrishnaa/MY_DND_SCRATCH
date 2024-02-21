@@ -62,28 +62,28 @@ export const SAY_BUBBLE = "SAY_BUBBLE";
 export const THINK_BUBBLE_FOR = "THINK_BUBBLE_FOR";
 export const SAY_BUBBLE_FOR = "SAY_BUBBLE_FOR";
 const initialGlobalState = {
-    1: { id: 1, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: MOVE, value: "10", title: "Move {x} steps" } },
-    2: { id: 2, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { icon: "redo", name: ROTATE_CLOCKWISE, value: "10", title: "Rotate {x} degree" } },
-    3: { id: 3, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { icon: "undo", name: ROTATE_ANTICLOCKWISE, value: "-10", title: "Rotate {x} degree" } },
-    4: { id: 4, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: GO_TO_COORDINATES, value: [10, 10], title: "Go to x: {x} y:" } },
-    5: { id: 5, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: GLIDE_TO_COORDINATES, value: [2, 10, 10], title: "Glide t sec to {x} {x}" } },
+    1: { id: 1, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { name: MOVE, value: "10", title: "Move {x} steps" } },
+    2: { id: 2, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { icon: "redo", name: ROTATE_CLOCKWISE, value: "10", title: "Rotate {x} degree" } },
+    3: { id: 3, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { icon: "undo", name: ROTATE_ANTICLOCKWISE, value: "-10", title: "Rotate {x} degree" } },
+    4: { id: 4, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { name: GO_TO_COORDINATES, value: [10, 10], title: "Go to x: {x} y:" } },
+    5: { id: 5, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { name: GLIDE_TO_COORDINATES, value: [2, 10, 10], title: "Glide t sec to {x} {x}" } },
 
     // single inputs
-    6: { id: 6, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: POINT_IN_DIRECTION, value: "90", title: "point in direction {x} deg" } },
-    7: { id: 7, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: CHANGE_X_BY, value: "0", title: "change x by" } },
-    8: { id: 8, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: CHANGE_Y_BY, value: "0", title: "change y by" } },
-    9: { id: 9, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: SET_X_TO, value: "0", title: "set x to" } },
-    10: { id: 10, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: SET_Y_TO, value: "0", title: "set y to" } },
+    6: { id: 6, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { name: POINT_IN_DIRECTION, value: "90", title: "point in direction {x} deg" } },
+    7: { id: 7, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { name: CHANGE_X_BY, value: "0", title: "change x by" } },
+    8: { id: 8, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { name: CHANGE_Y_BY, value: "0", title: "change y by" } },
+    9: { id: 9, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { name: SET_X_TO, value: "0", title: "set x to" } },
+    10: { id: 10, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { name: SET_Y_TO, value: "0", title: "set y to" } },
 
-    11: { id: 11, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: CHANGE_SIZE_BY, value: "1", title: "change size by" } },
-    12: { id: 12, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { name: CHANGE_SIZE, value: "10", title: "change size to {x} %" } },
+    11: { id: 11, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { name: CHANGE_SIZE_BY, value: "1", title: "change size by" } },
+    12: { id: 12, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { name: CHANGE_SIZE, value: "10", title: "change size to {x} %" } },
 
-    13: { id: 13, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: HIDE_SVG, title: " hide  " } },
-    14: { id: 14, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: SHOW_SVG, title: " show  " } },
-    15: { id: 15, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: THINK_BUBBLE, value: "hmmm...", title: " think  {x} " } },
-    // 16: { id: 16, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: THINK_BUBBLE_FOR, value: ["hmmm...", 1], title: " think  {x} for {x} seconds " } },
-    16: { id: 16, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: SAY_BUBBLE, value: "Hello", title: " say  {x} " } },
-    // 18: { id: 18, uId: getGlobalUId(), type: ItemTypes.MOTION, action: { color: "purple", name: SAY_BUBBLE_FOR, value: ["Hello", 1], title: " say  {x} for  {x} seconds " } },
+    13: { id: 13, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: HIDE_SVG, title: " hide  " } },
+    14: { id: 14, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: SHOW_SVG, title: " show  " } },
+    15: { id: 15, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: THINK_BUBBLE, value: "hmmm...", title: " think  {x} " } },
+    // 16: { id: 16, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: THINK_BUBBLE_FOR, value: ["hmmm...", 1], title: " think  {x} for {x} seconds " } },
+    16: { id: 16, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: SAY_BUBBLE, value: "Hello", title: " say  {x} " } },
+    // 18: { id: 18, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: SAY_BUBBLE_FOR, value: ["Hello", 1], title: " say  {x} for  {x} seconds " } },
 };
 
 const defaultHeight = 100.04156036376953;
