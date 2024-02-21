@@ -372,16 +372,8 @@ export function blockReducer(state = {
                     }
                 });
             }
-        case "PLAY":
-            const playBlocks = state.blocks.filter(r=>{
-                console.log(r,' r = ',r?.children?.[0]?.action?.name);
-                return r?.children?.[0]?.action?.name === "PLAY"
-            });
-            console.log(playBlocks,' playBlocks ', playBlocks);
-            localStorage.setItem("b", JSON.stringify(state.blocks.filter(r=>{
-                console.log(r,' r = ',r?.children?.[0]?.action?.name);
-                return r?.children?.[0]?.action?.name === "PLAY"
-            })));
+        case "CLICK_PLAY":
+            localStorage.setItem("b", JSON.stringify(state.blocks));
             return state;
         default:
             return state;

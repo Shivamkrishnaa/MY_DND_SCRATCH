@@ -53,7 +53,7 @@ export const Block = ({ id, action, rootId }) => {
    const dispatch = useDispatch();
    const handleClick = () => {
       dispatch({
-         type: "PLAY",
+         type: "CLICK_PLAY",
          payload: {
             action,
          }

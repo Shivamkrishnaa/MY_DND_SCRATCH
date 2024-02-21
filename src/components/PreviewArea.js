@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import { CHANGE_SIZE, CHANGE_SIZE_BY, HIDE_SVG, SAY_BUBBLE, SAY_BUBBLE_FOR, SHOW_SVG, THINK_BUBBLE, THINK_BUBBLE_FOR } from "../store/block";
 import { BubbleContainer } from "./Bubble/BubbleContainer";
 import { ActionCreators } from "redux-undo";
+import { PLAY } from "../store/block";
 
 const styles = {
   width: "100%",
@@ -25,8 +26,9 @@ const styles = {
     const blocks = [];
     state.dnd.blocks.forEach((r,i)=>{
       const block = [];
+      var isParentPlay = r.children[0].action.name === PLAY;
       r.children.forEach((r, j)=>{
-        block.push(j);
+        block.push(isParentPlay ? j : null);
       });
       blocks.push(block);
     });
@@ -59,10 +61,12 @@ const styles = {
   const startMove = () => {
     blocksIdx.forEach((block, rootIdx)=>{
       block.forEach(idx => {
-        dispatch({
-          type: "PLAY",
-          payload: { idx, rootIdx },
-        });
+        if(idx !== null){
+          dispatch({
+            type: "CLICK_PLAY",
+            payload: { idx, rootIdx },
+          });
+        }
       })
     });
   }

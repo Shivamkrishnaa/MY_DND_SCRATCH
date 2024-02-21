@@ -55,7 +55,7 @@ export function previewReducer(state = {
                     }
                 }
             });
-        case "PLAY":
+        case "CLICK_PLAY":
             const blocks = JSON.parse(localStorage.getItem("b"));
             const { idx, rootIdx } = action.payload;
             const { name, value } = action.payload.action ? action.payload.action : blocks[rootIdx].children[idx].action;
