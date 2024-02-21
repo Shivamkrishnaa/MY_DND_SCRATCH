@@ -12,6 +12,7 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
     return state.dnd.blocks?.[rootIdx]?.children?.[idx] || {};
   });
   const ref = useRef(null);
+  const isOnTopRef = useRef(false);
   const dispatch = useDispatch();
   const [{ isOver, clientOffset }, drop] = useDrop(
     () => ({
@@ -21,6 +22,7 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
         const payload = {
           dragged: item, // item which is dragged
           dropped: { idx, rootIdx },
+          addAfterItemIdx: isOnTopRef.current,
           position: {
             initialPosition: monitor.getInitialSourceClientOffset(),
             finalPosition: monitor.getSourceClientOffset(),
@@ -80,6 +82,7 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
   let className = `item-${rootIdx}-${idx}`;
   if (isOver) {
     const isOnTop = checkIsHoveringAbove({ hoverBoundingRect: ref.current?.getBoundingClientRect(), clientOffset });
+    isOnTopRef.current = isOnTop;
     className += isOnTop ? " pt-10 bg-blue-500 " : " pb-10 bg-blue-500 "
   }
   return (<span className={className} ref={ref}>

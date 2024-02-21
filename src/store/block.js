@@ -156,7 +156,7 @@ export function blockReducer(state = {
                 })
             };
         case "MOVE_IN_CONTAINER":
-            let addAfterItemIdx = checkIsHoveringAbove(position);
+            let addAfterItemIdx = action.payload.addAfterItemIdx;
             if (isGlobalBlock(dragged)) {
                 return update(state, {
                     blocks: {
