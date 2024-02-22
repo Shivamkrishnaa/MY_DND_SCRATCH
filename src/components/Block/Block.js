@@ -9,7 +9,8 @@ export const Block = memo(({ id, action, rootId }) => {
   const selectedSpriteId = useSelector((state) => state.dnd.selectedSpriteId);
   const dispatch = useDispatch();
 
-  const handleClick = useCallback(() => {
+  const handleClick = useCallback((e) => {
+    if (e.target.tagName === 'INPUT') return;
     dispatch({
       type: "CLICK_PLAY",
       payload: {
@@ -17,6 +18,18 @@ export const Block = memo(({ id, action, rootId }) => {
         action,
       }
     });
+  }, [selectedSpriteId, action]);
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter') {
+      dispatch({
+        type: "CLICK_PLAY",
+        payload: {
+          id: selectedSpriteId,
+          action,
+        }
+      });
+    }
   }, [selectedSpriteId, action]);
 
   const handleChange = useCallback((e) => {
@@ -34,17 +47,17 @@ export const Block = memo(({ id, action, rootId }) => {
   const getColor = () => action.color || "blue";
 
   return (
-      <div
-        onDoubleClick={handleClick}
-        title="double click to play"
-        className={`inline-block px-2 py-1 text text-xs text-white cursor-pointer border rounded bg-${getColor()}-500`}
-      >
-        {renderBlockComponent(action, handleChange)}
-      </div>
+    <div
+      onDoubleClick={handleClick}
+      title="double click to play"
+      className={`inline-block px-2 py-1 text text-xs text-white cursor-pointer border rounded bg-${getColor()}-500`}
+    >
+      {renderBlockComponent(action, handleChange, handleKeyDown)}
+    </div>
   );
 });
 
-const renderBlockComponent = (action, handleChange) => {
+const renderBlockComponent = (action, handleChange, handleKeyDown) => {
   if (action?.value === undefined) {
     return <ButtonBlock handleChange={handleChange} {...action} />;
   } else if (Array.isArray(action?.value) && action?.value.length === 2) {
@@ -52,7 +65,7 @@ const renderBlockComponent = (action, handleChange) => {
   } else if (Array.isArray(action?.value) && action?.value.length === 3) {
     return <GlideInputBlock handleChange={handleChange} {...action} />;
   } else if (typeof action?.value === "number" || typeof action?.value === "string") {
-    return <UnoInputField handleChange={handleChange} {...action} />;
+    return <UnoInputField handleKeyDown={handleKeyDown} handleChange={handleChange} {...action} />;
   }
-  return <></>; 
+  return <></>;
 };

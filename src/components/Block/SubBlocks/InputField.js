@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 const defaultWidth = 4;
 
-const InputField = ({ value, handleChange }) => {
+const InputField = ({ value, handleChange, handleKeyDown }) => {
   const [width, setWidth] = useState(defaultWidth);
 
-  const handleFocus = () => {
+  const handleFocus = (e) => {
     setWidth(String(value).length < defaultWidth ? defaultWidth : String(value).length);
   };
 
-  const handleBlur = () => {
+  const handleBlur = (e) => {
     setWidth(String(value).length < defaultWidth ? String(value).length : defaultWidth);
   };
 
@@ -22,7 +22,8 @@ const InputField = ({ value, handleChange }) => {
       style={{ width: `${width}ch` }}
       onFocus={handleFocus}
       onBlur={handleBlur}
-      className="mx-1 min-w-0 min-w-md w-full max-w-md  text-center text-black border rounded"
+      onKeyDown={handleKeyDown}
+      className="focus:outline-none mx-1 min-w-0 min-w-md w-full max-w-md  text-center text-black border rounded"
       onChange={handleChange}
       value={value}
     />
