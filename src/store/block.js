@@ -7,7 +7,7 @@ const globalSubstring = "g_";
 const getGlobalUId = () => uniqueId(globalSubstring);
 const globalSpriteSubstring = "s_";
 
-const getSpriteUId = () => uniqueId(globalSpriteSubstring);
+export const getSpriteUId = () => uniqueId(globalSpriteSubstring);
 
 const parseNumber = (value) => isNaN(Number(value)) ? 0 : Number(value);
 const getNumber = (value) => isNaN(Number(value)) ? 0 : Number(value).toString();
@@ -92,8 +92,7 @@ const initialGlobalState = {
 
 const defaultHeight = 100.04156036376953;
 const defaultWidth = 95.17898101806641;
-const defaultSprite = {
-    id: 1,
+export const defaultSpriteData = {
     top: 20,
     left: 80,
     rotate: 0,
@@ -108,25 +107,31 @@ const defaultSprite = {
         time: 0,
     }
 }
+const defaultSprite = {
+    id: 1,
+    ...defaultSpriteData,
+}
 const getNewSprite = () => update(defaultSprite, {
     $merge: {
         id: getSpriteUId(),
     }
 });
 export const initialSprite = getNewSprite();
-
+const getDefaultNewBlock = () => ({
+    position: { top: 120, left: 300 },
+    children: [{
+        id: uniqueId(),
+        type: ItemTypes.BLOCK,
+        action: cloneDeep(initialGlobalState[1].action)
+    }],
+})
 export function blockReducer(state = {
     globalBlocks: initialGlobalState,
-    blocks: [
-        // {
-        //     position: { top: 120, left: 300 },
-        //     children: [{
-        //         id: uniqueId(),
-        //         type: "Motion",
-        //         action: initialGlobalState[1].action
-        //     }],
-        // }
-    ],
+    blocks: {
+        [initialSprite.id]: [
+            getDefaultNewBlock(),
+        ],
+    },
     sprite: { [initialSprite.id]: defaultSprite },
     selectedSpriteId: initialSprite.id,
 }
@@ -134,6 +139,7 @@ export function blockReducer(state = {
     let dropped;
     let dragged;
     let position;
+    let selectedSpriteId = state.selectedSpriteId;
     dropped = action?.payload?.dropped;
     dragged = action?.payload?.dragged;
     position = action?.payload?.position;
@@ -145,218 +151,211 @@ export function blockReducer(state = {
                         [action.payload.dropped.idx]: {
                             uId: {
                                 $set: getGlobalUId(),
-                            }
-                        }
+                            },
+                        },
                     },
                     blocks: {
-                        $push: [
-                            {
-                                position: {
-                                    top: Math.abs(position.finalPosition.y),
-                                    left: position.finalPosition.x - position.initialPosition.x,
+                        [selectedSpriteId]: {
+                            $push: [
+                                {
+                                    position: {
+                                        top: Math.abs(position.finalPosition.y),
+                                        left: position.finalPosition.x - position.initialPosition.x,
+                                    },
+                                    children: [
+                                        {
+                                            id: dropped.id,
+                                            type: dropped.type,
+                                            action: dropped.action,
+                                        },
+                                    ]
                                 },
-                                children: [
-                                    {
-                                        id: dropped.id,
-                                        type: dropped.type,
-                                        action: dropped.action,
-                                    }
-                                ]
-                            }
-                        ]
-                    }
+                            ]
+                        },
+                    },
                 });
             } else {
                 const newState = JSON.parse(JSON.stringify(state));
-                const children = newState.blocks[dropped.rootIdx].children.splice(dropped.idx);
-                if (newState.blocks[dropped.rootIdx].children.length == 0) {
-                    newState.blocks.splice(dropped.rootIdx, 1);
+                const children = newState.blocks[selectedSpriteId][dropped.rootIdx].children.splice(dropped.idx);
+                if (newState.blocks[selectedSpriteId][dropped.rootIdx].children.length == 0) {
+                    newState.blocks[selectedSpriteId].splice(dropped.rootIdx, 1);
                 }
                 return update(newState, {
                     blocks: {
-                        $push: [{
-                            position: {
-                                top: Math.abs(position.finalPosition.y) - 15,
-                                left: position.finalPosition.x,
-                            },
-                            children,
-                        }]
+                        [selectedSpriteId]: {
+                            $push: [{
+                                position: {
+                                    top: Math.abs(position.finalPosition.y) - 15,
+                                    left: position.finalPosition.x,
+                                },
+                                children,
+                            }]
+                        }
                     }
                 })
             };
+        // // const newState = JSON.parse(JSON.stringify(state));
+        // // const children = newState.blocks[dropped.rootIdx].children.splice(dropped.idx);
+        // // if (newState.blocks[dropped.rootIdx].children.length == 0) {
+        // //     newState.blocks.splice(dropped.rootIdx, 1);
+        // // }
+        // return update(state, {
+        //     blocks: {
+        //         [selectedSpriteId]: {
+        //             [dropped.rootIdx] : {
+        //                 position: {
+        //                     $merge: {
+        //                         top: Math.abs(position.finalPosition.y) - 15,
+        //                         left: position.finalPosition.x,
+        //                     },
+        //                 },
+        //             },
+        //             // $push: [{
+        //             //     children,
+        //             // }]
+        //         },
+        //     },
+        // });
+        // };
         case "MOVE_IN_CONTAINER":
             let addAfterItemIdx = action.payload.addAfterItemIdx;
             if (isGlobalBlock(dragged)) {
                 return update(state, {
                     blocks: {
-                        [dropped.rootIdx]: {
-                            children: {
-                                $splice: !addAfterItemIdx ? [[dropped.idx + 1, 0, { ...dragged }]] : [[dropped.idx, 0, { ...dragged }]],
-                            }
-                        }
-                    }
+                        [selectedSpriteId]: {
+                            [dropped.rootIdx]: {
+                                children: {
+                                    $splice: !addAfterItemIdx ? [[dropped.idx + 1, 0, { ...dragged }]] : [[dropped.idx, 0, { ...dragged }]],
+                                }
+                            },
+                        },
+                    },
                 })
             } else {
                 const newState = cloneDeep({ ...state });
-                const children = newState.blocks[dragged.rootIdx].children.splice(dragged.idx);
-                const newState2 =  update(newState, {
+                const children = newState.blocks[selectedSpriteId][dragged.rootIdx].children.splice(dragged.idx);
+                const newState2 = update(newState, {
                     blocks: {
-                        [dropped.rootIdx]: {
-                            children: {
-                                $splice: !addAfterItemIdx ? [[(dropped.idx + 1), 0, ...children]] : [[dropped.idx, 0, ...children]],
+                        [selectedSpriteId]: {
+                            [dropped.rootIdx]: {
+                                children: {
+                                    $splice: !addAfterItemIdx ? [[(dropped.idx + 1), 0, ...children]] : [[dropped.idx, 0, ...children]],
+                                }
                             }
                         }
                     }
                 });
                 // remove empty block
-                if (newState2.blocks[dragged.rootIdx].children.length == 0) {
-                    newState2.blocks.splice(dragged.rootIdx, 1);
+                if (newState2.blocks[selectedSpriteId][dragged.rootIdx].children.length == 0) {
+                    newState2.blocks[selectedSpriteId].splice(dragged.rootIdx, 1);
                 }
                 return newState2;
             };
         case "MODIFY_BLOCK":
             if (action.payload.rootId === undefined) {
-                switch (action.payload.name) {
-                    case ["MOVE", "CHANGE_X_BY", "CHANGE_Y_BY", "SET_X_TO", "SET_Y_TO"]:
+                const { id, name, value } = action.payload;
+                const updatedAction = { value: { $set: value } };
+
+                switch (name) {
+                    case MOVE:
+                    case CHANGE_X_BY:
+                    case CHANGE_Y_BY:
+                    case SET_X_TO:
+                    case SET_Y_TO:
+                    case ROTATE_CLOCKWISE:
                         return update(state, {
                             globalBlocks: {
-                                [action.payload.id]: {
+                                [id]: {
+                                    action: updatedAction
+                                }
+                            }
+                        });
+
+                    case ROTATE_ANTICLOCKWISE:
+                        return update(state, {
+                            globalBlocks: {
+                                [id]: {
                                     action: {
-                                        value: { $set: getNumber(action.payload.value) },
+                                        value: { $set: getNegativeNumber(value) },
                                     }
                                 }
                             }
                         });
-                    case "ROTATE_CLOCKWISE":
+
+                    case GO_TO_COORDINATES:
+                    case GLIDE_TO_COORDINATES:
+                    case POINT_IN_DIRECTION:
                         return update(state, {
                             globalBlocks: {
-                                [action.payload.id]: {
-                                    action: {
-                                        value: { $set: getNumber(action.payload.value) },
-                                    }
+                                [id]: {
+                                    action: updatedAction
                                 }
                             }
                         });
-                    case "ROTATE_ANTICLOCKWISE":
-                        return update(state, {
-                            globalBlocks: {
-                                [action.payload.id]: {
-                                    action: {
-                                        value: { $set: getNegativeNumber(action.payload.value) },
-                                    }
-                                }
-                            }
-                        });
-                    case "GO_TO_COORDINATES":
-                        return update(state, {
-                            globalBlocks: {
-                                [action.payload.id]: {
-                                    action: {
-                                        value: { $set: (action.payload.value) },
-                                    }
-                                }
-                            }
-                        });
-                    case "GLIDE_TO_COORDINATES":
-                        return update(state, {
-                            globalBlocks: {
-                                [action.payload.id]: {
-                                    action: {
-                                        value: { $set: (action.payload.value) },
-                                    }
-                                }
-                            }
-                        });
-                    case "POINT_IN_DIRECTION":
-                        return update(state, {
-                            globalBlocks: {
-                                [action.payload.id]: {
-                                    action: {
-                                        value: { $set: (action.payload.value) },
-                                    }
-                                }
-                            }
-                        });
+
                     default:
                         return update(state, {
                             globalBlocks: {
-                                [action.payload.id]: {
-                                    action: {
-                                        value: { $set: (action.payload.value) },
-                                    }
+                                [id]: {
+                                    action: updatedAction
                                 }
                             }
                         });
                 }
+
             } else {
+                const { rootId, id, name, value } = action.payload;
+                const updatedAction = { value: { $set: value } };
 
-                switch (action.payload.name) {
-                    case ["MOVE", "CHANGE_X_BY", "CHANGE_Y_BY", "SET_X_TO", "SET_Y_TO", CHANGE_SIZE_BY, CHANGE_SIZE]:
+                switch (name) {
+                    case MOVE:
+                    case CHANGE_X_BY:
+                    case CHANGE_Y_BY:
+                    case SET_X_TO:
+                    case SET_Y_TO:
+                    case CHANGE_SIZE_BY:
+                    case CHANGE_SIZE:
+                    case ROTATE_CLOCKWISE:
                         return update(state, {
                             blocks: {
-                                [action.payload.rootId]: {
-                                    children: {
-                                        [action.payload.id]: {
-                                            action: {
-                                                value: { $set: getNumber(action.payload.value) },
+                                [selectedSpriteId]: {
+                                    [rootId]: {
+                                        children: {
+                                            [id]: {
+                                                action: updatedAction
                                             }
                                         }
+                                    }
+                                }
+                            }
+                        });
 
+                    case ROTATE_ANTICLOCKWISE:
+                        return update(state, {
+                            blocks: {
+                                [selectedSpriteId] : {
+                                    [rootId]: {
+                                        children: {
+                                            [id]: {
+                                                action: {
+                                                    value: { $set: getNegativeNumber(value) },
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
                         });
-                    case "ROTATE_CLOCKWISE":
-                        return update(state, {
-                            blocks: {
-                                [action.payload.rootId]: {
-                                    children: {
-                                        [action.payload.id]: {
-                                            action: {
-                                                value: { $set: getNumber(action.payload.value) },
-                                            }
-                                        }
 
-                                    }
-                                }
-                            }
-                        });
-                    case "ROTATE_ANTICLOCKWISE":
+                    case GO_TO_COORDINATES:
+                    case POINT_IN_DIRECTION:
                         return update(state, {
                             blocks: {
-                                [action.payload.rootId]: {
-                                    children: {
-                                        [action.payload.id]: {
-                                            action: {
-                                                value: { $set: getNegativeNumber(action.payload.value) },
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    case "GO_TO_COORDINATES":
-                        return update(state, {
-                            blocks: {
-                                [action.payload.rootId]: {
-                                    children: {
-                                        [action.payload.id]: {
-                                            action: {
-                                                value: { $set: (action.payload.value) },
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    case "POINT_IN_DIRECTION":
-                        return update(state, {
-                            blocks: {
-                                [action.payload.rootId]: {
-                                    children: {
-                                        [action.payload.id]: {
-                                            action: {
-                                                value: { $set: (action.payload.value) },
+                                [selectedSpriteId] : {
+                                    [rootId]: {
+                                        children: {
+                                            [id]: {
+                                                action: updatedAction
                                             }
                                         }
                                     }
@@ -366,11 +365,11 @@ export function blockReducer(state = {
                     default:
                         return update(state, {
                             blocks: {
-                                [action.payload.rootId]: {
-                                    children: {
-                                        [action.payload.id]: {
-                                            action: {
-                                                value: { $set: (action.payload.value) },
+                                [selectedSpriteId] : {
+                                    [rootId]: {
+                                        children: {
+                                            [id]: {
+                                                action: updatedAction
                                             }
                                         }
                                     }
@@ -378,52 +377,62 @@ export function blockReducer(state = {
                             }
                         });
                 }
-            };
+            }
         case "DELETE":
-            if(action.payload.idx === 0) {
+            if (action.payload.idx === 0) {
                 return update(state,
                     {
                         blocks: {
-                            $splice: [[
-                                action.payload.idx, 1
-                            ]]
-                        }
-                    }
+                            [selectedSpriteId]: {
+                                $splice: [[
+                                    action.payload.idx, 1
+                                ]],
+                            },
+                        },
+                    },
                 );
             } else {
                 return update(state, {
                     blocks: {
-                        [action.payload.rootIdx] : {
-                            children: [[
-                                action.payload.idx
-                            ]]
-                        }
-                    }
+                        [selectedSpriteId]: {
+                            [action.payload.rootIdx]: {
+                                children: [[
+                                    action.payload.idx
+                                ]]
+                            },
+                        },
+                    },
                 });
             }
         case "CLICK_PLAY":
             localStorage.setItem("b", JSON.stringify(state.blocks));
             return state;
-            case "ADD_SPRITE":
-                const newSprite = getNewSprite();
-                return update(state, {
-                    sprite: {
-                        [newSprite.id]: { $set: newSprite },
+        case "ADD_SPRITE":
+            const newSprite = getNewSprite();
+            newSprite.id = action.payload.spriteId;
+            return update(state, {
+                sprite: {
+                    [newSprite.id]: { $set: newSprite },
+                },
+                blocks: {
+                    [newSprite.id]: {
+                        $set: [getDefaultNewBlock()]
                     }
-                });
-            case "REMOVE_SPRITE":
-                return update(state, {
-                    sprite: {
-                        $unset: [action.payload.id],
-                    }
-                });
-            case "SELECT_SPRITE" :
-                return update(state, {
-                    selectedSpriteId: {
-                        $set: action.payload.id,
-                    }
-                });
-            default:
+                }
+            });
+        case "REMOVE_SPRITE":
+            return update(state, {
+                sprite: {
+                    $unset: [action.payload.id],
+                }
+            });
+        case "SELECT_SPRITE":
+            return update(state, {
+                selectedSpriteId: {
+                    $set: action.payload.id,
+                }
+            });
+        default:
             return state;
     }
 }

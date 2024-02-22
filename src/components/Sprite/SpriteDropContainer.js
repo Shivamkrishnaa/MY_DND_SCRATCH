@@ -17,7 +17,7 @@ export const SpriteDropContainer = memo(() => {
             drop(item, monitor) {
                 dispatch({
                     type: "SPRITE_MOVE", payload: {
-                        id: item.id,
+                        spriteId: item.id,
                         delta: monitor.getDifferenceFromInitialOffset()
                     }
                 });

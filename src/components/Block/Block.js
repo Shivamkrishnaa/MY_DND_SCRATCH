@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Icon from "./Icon";
 
 
@@ -9,9 +9,9 @@ const InputField = memo(({ value, handleChange, title, color = "blue", icon }) =
       <div className={`px-1 py-2 whitespace-nowrap border border-black border-solid border-1 bg-${color}-500`}>
          {t1 && ` ${t1} `}
          {icon && <Icon name={icon} size={15} className="text-white mx-2" />}
-         <input className={`p-2 ml-1 mr-1 h-6 w-${value.length + 9} text-black border rounded-md`} onChange={(e) => handleChange({ target: { value: [e.target.value, (value[1])] } })} value={value[0]} />
+         <input className={`p-2 ml-1 mr-1 h-6 w-full max-w-md text-black border rounded-md`} onChange={(e) => handleChange({ target: { value: [e.target.value, (value[1])] } })} value={value[0]} />
          {t2 && ` ${t2} `}
-         <input className={`p-2 ml-1 mr-1 h-6 w-${value.length + 9} text-black border rounded-md`} onChange={(e) => handleChange({ target: { value: [value[0], e.target.value] } })} value={value[1]} />
+         <input className={`p-2 ml-1 mr-1 h-6 w-full max-w-md text-black border rounded-md`} onChange={(e) => handleChange({ target: { value: [value[0], e.target.value] } })} value={value[1]} />
          {t3 && ` ${t3} `}
       </div>
    );
@@ -29,7 +29,7 @@ const SingleInputField = memo(({ value, handleChange, title, icon, color = "blue
       <p className={`px-1 py-2 whitespace-nowrap border border-black border-solid border-1 bg-${color}-500 flex items-center`}>
          {` ${t1} `}
          {icon && <Icon name={icon} size={15} className="text-white mx-2" />}
-         <input className={`p-2  ml-1 mr-1 h-6 w-${value.length + 9} text-black border rounded`} onChange={handleChange} value={value} />
+         <input className={`p-2  ml-1 mr-1 h-6 w-full max-w-md text-black border rounded`} onChange={handleChange} value={value} />
          {t2 && ` ${t2} `}
       </p>
    );
@@ -40,21 +40,26 @@ const GlideInputField = memo(({ value, handleChange, title, color="blue" }) => {
    return (
       <p className={`px-1 py-2 whitespace-nowrap border border-black border-solid border-1 bg-${color}-500 flex items-center`}>
          {" glide "}
-         <input className={`p-2 ml-1 mr-1 h-6 w-${value.length + 9} text-black border rounded-md`} onChange={(e) => handleChange({ target: {value:[e.target.value, value[1], value[2]]} })} value={value[0]} />
+         <input className={`p-2 ml-1 mr-1 h-6 w-full max-w-md text-black border rounded-md`} onChange={(e) => handleChange({ target: {value:[e.target.value, value[1], value[2]]} })} value={value[0]} />
          {" sec to x: "}
-         <input className={`p-2 ml-1 mr-1 h-6 w-${value.length + 9} text-black border rounded-md`} onChange={(e) => handleChange({ target: {value:[value[0], e.target.value, value[2]]} })} value={value[1]} />
+         <input className={`p-2 ml-1 mr-1 h-6 w-full max-w-md text-black border rounded-md`} onChange={(e) => handleChange({ target: {value:[value[0], e.target.value, value[2]]} })} value={value[1]} />
          {" y: "}
-         <input className={`p-2 ml-1 mr-1 h-6 w-${value.length + 9} text-black border rounded-md`} onChange={(e) => handleChange({ target: {value:[value[0], value[1], e.target.value]} })} value={value[2]} />
+         <input className={`p-2 ml-1 mr-1 h-6 w-full max-w-md text-black border rounded-md`} onChange={(e) => handleChange({ target: {value:[value[0], value[1], e.target.value]} })} value={value[2]} />
       </p>
    );
 })
 
-export const Block = ({ id, action, rootId }) => {
+export const Block = memo(({ id, action, rootId }) => {
+   // console.log(id, rootId,' id, rootId');
+   const selectedSpriteId = useSelector((state) => {
+      return state.dnd.selectedSpriteId;
+    });
    const dispatch = useDispatch();
    const handleClick = () => {
       dispatch({
          type: "CLICK_PLAY",
          payload: {
+            id: selectedSpriteId,
             action,
          }
       });
@@ -80,4 +85,4 @@ export const Block = ({ id, action, rootId }) => {
          </div>
       </div>
    );
-}
+})

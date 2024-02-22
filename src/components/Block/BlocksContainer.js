@@ -1,20 +1,20 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { BlocksContainer } from './BlockContainer';
+import BlockList from './BlockList';
 
 
-
-const DragBlock = ({ idx }) => {
+const BlocksContainer = ({ idx }) => {
   const { top, left } = useSelector((state) => {
-    return state.dnd.blocks?.[idx]?.position || {};
+    const selectedSpriteId = state.dnd.selectedSpriteId;
+    return state.dnd.blocks[selectedSpriteId]?.[idx]?.position || {};
   });
   return (
     <div className="absolute" style={{ top: `calc(${top}px - ${2}rem)`, left: `calc(${left}px - ${15}rem)` }}>
       <div className='flex flex-col flex-wrap'>
-        <BlocksContainer idx={idx} />
+        <BlockList idx={idx} />
       </div>
     </div>
   );
 }
 
-export default DragBlock;
+export default BlocksContainer;

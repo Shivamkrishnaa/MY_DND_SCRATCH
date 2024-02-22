@@ -1,5 +1,5 @@
 import update from 'immutability-helper';
-import { initialSprite } from './block';
+import { defaultSpriteData, initialSprite } from './block';
 import { cloneDeep } from 'lodash';
 
 const parseNumber = (value) => isNaN(Number(value)) ? 0 : Number(value);
@@ -33,25 +33,36 @@ export function previewReducer(state = {
         case "SPRITE_MOVE":
             return update(state, {
                 sprite: {
-                    [action.payload.id]: {
+                    [action.payload.spriteId]: {
                         $merge: {
-                            left: state.sprite[action.payload.id].left + action.payload.delta.x,
-                            top: state.sprite[action.payload.id].top + action.payload.delta.y,
+                            left: state.sprite[action.payload.spriteId].left + action.payload.delta.x,
+                            top: state.sprite[action.payload.spriteId].top + action.payload.delta.y,
                         }
                     }
                 }
             });
+        case "ADD_SPRITE":
+            return update(state, {
+                sprite: {
+                    [action.payload.spriteId]: {
+                        $set: {
+                            ...cloneDeep(defaultSpriteData)
+                        }
+                    },
+                }
+            })
         case "CLICK_PLAY":
             const blocks = JSON.parse(localStorage.getItem("b"));
-            const { idx, rootIdx } = action.payload;
-            const { name, value } = action.payload.action ? action.payload.action : blocks[rootIdx].children[idx].action;
+            console.log('blocks :', blocks);
+            const { idx, rootIdx, id } = action.payload;
+            const { name, value } = action.payload.action ? action.payload.action : blocks[id][rootIdx].children[idx].action;
             switch (name) {
                 case MOVE:
                     return update(state, {
                         sprite: {
-                            [action.payload.id]: {
+                            [id]: {
                                 $merge: {
-                                    left: (parseNumber(state.sprite[action.payload.id].left) + parseNumber(value)),
+                                    left: (parseNumber(state.sprite[id].left) + parseNumber(value)),
                                 },
                             }
                         },

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { ManageSpriteContainer } from './ManageSpriteContainer';
+import { getSpriteUId } from '../../store/block';
 
 
 
@@ -12,12 +13,16 @@ export const MangageSprite = memo(() => {
         return Object.keys(state.dnd.sprite);
     });
     const addSprite = () => {
+        const spriteId = getSpriteUId();
         dispatch({
             type: "ADD_SPRITE",
+            payload: {
+                spriteId,
+            }
         });
     }
     return (
-        <div className=''>
+        <div className='h-1/3 border-t border-l p-3'>
             <div className='flex justify-between items-center bg-gray-100 border border-gray-300 rounded p-2'>
                 <p className='p-1 inline'>
                     Sprites

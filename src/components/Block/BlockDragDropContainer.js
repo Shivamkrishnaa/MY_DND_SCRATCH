@@ -1,16 +1,17 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { memo, useEffect, useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { useDispatch, useSelector } from 'react-redux';
-import { ItemTypes } from '../utils';
-import { uniqueId } from 'lodash';
-import { Block } from './Block';
-import { PLAY, checkIsHoveringAbove } from '../store/block';
+import { ItemTypes } from '../../utils';
+import { PLAY, checkIsHoveringAbove } from '../../store/block';
+import BlockContainer from './BlockContainer';
 
 const styleId = "block-style";
-export const DragDropContainer = memo(({ idx, rootIdx }) => {
+const BlockDragDropContainer = memo(({ idx, rootIdx }) => {
   const { id, action, type } = useSelector((state) => {
-    return state.dnd.blocks?.[rootIdx]?.children?.[idx] || {};
+    const selectedSpriteId = state.dnd.selectedSpriteId;
+    return state.dnd.blocks[selectedSpriteId]?.[rootIdx]?.children?.[idx] || {};
   });
+  // console.log(type, id, action );
   const ref = useRef(null);
   const isOnTopRef = useRef(false);
   const dispatch = useDispatch();
@@ -39,9 +40,7 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
         clientOffset: monitor.getClientOffset(),
         item: monitor.getItem(),
       }),
-    }),
-    [],
-  )
+    }),[idx, rootIdx, isOnTopRef.current]);
   const [{ isDragging }, drag] = useDrag(() => ({
     type,
     item: { idx, rootIdx, action },
@@ -57,7 +56,7 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     })
-  }), []);
+  }), [idx, rootIdx, action]);
 
   drag(drop((ref)));
 
@@ -87,11 +86,12 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
     isOnTopRef.current = isOnTop;
     className += isOnTop ? " pt-10 bg-blue-500 " : " pb-10 bg-blue-500 "
     // check to play item only on top
-    console.log('item?.action?.name :', 
-    item?.action?.name=== action.name,
-    action.name === PLAY);
+    console.log('item?.action?.name=== action.name :', item, action.name);
+    // console.log('item?.action?.name :', 
+    // item?.action?.name=== action.name,
+    // action.name === PLAY);
     if (
-      (item?.action?.name=== action.name && action.name === PLAY) || 
+      (item?.action?.name=== action.name && action.name === PLAY) ||
       (item?.action?.name === PLAY && ((idx !== 0 ) || (idx === 0 && !isOnTop))) || 
       (item?.action?.name !== PLAY && action.name === PLAY && isOnTop)
       ) {
@@ -99,8 +99,10 @@ export const DragDropContainer = memo(({ idx, rootIdx }) => {
       isOnTopRef.current = null;
     }
   }
-  console.log(canDrop,' canDrop ');
-  return (<span className={className} ref={ref}>
-    <Block rootId={rootIdx} id={idx} action={action} />
+
+return (<span className={className} ref={ref}>
+    <BlockContainer rootIdx={rootIdx} idx={idx} />
   </span>);
 })
+
+export default BlockDragDropContainer;

@@ -13,15 +13,11 @@ export default function App() {
       <div className="h-screen overflow-hidden flex flex-row  ">
       <div className="flex-1 h-screen overflow-hidden flex flex-row bg-white border-t border-r border-gray-200 rounded-tr-xl mr-2">
           <Sidebar /> 
-          {/* <MidArea /> */}
+          <MidArea />
         </div>
         <div className="w-1/3 bg-white border-t border-l ">
-          <div className="h-2/3">
             <PreviewArea />
-          </div>
-          <div className="h-1/3 border-t border-l p-3">
             <MangageSprite/>
-          </div>
         </div>
       </div>
     </div>

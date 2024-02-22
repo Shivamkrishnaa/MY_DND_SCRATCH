@@ -4,8 +4,8 @@ import { SpriteWiget } from "./Sprite/SpriteWiget";
 
  function PreviewArea() {
   return (
-    <div style={{ transform: "rotate(0deg)" }} 
-    className="flex-none w-full h-full p-2">
+    <div
+    className="flex-none w-full p-2 h-2/3 transform rotate-0">
       <SpriteWiget/>
       <SpriteDropContainer/>
     </div>

@@ -1,9 +1,10 @@
-import React, { memo, useRef } from 'react'
+import React, { memo } from 'react'
 import { useDrag } from 'react-dnd'
-import { useDispatch, useSelector } from 'react-redux';
-import { Block } from './Block';
+import { useSelector } from 'react-redux';
+import { Block } from '../Block/Block';
 
-export const DragContainer = memo(({ id }) => {
+
+export const SidebarBlockDragContainer = memo(({ id }) => {
     const { uId, type, action } = useSelector((state) => {
         return state.dnd.globalBlocks[id];
     });
