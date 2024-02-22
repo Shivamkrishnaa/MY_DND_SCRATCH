@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { useDrag } from 'react-dnd'
-import { ItemTypes } from '../utils'
+import { ItemTypes } from '../../utils'
 import { useSelector } from 'react-redux'
 
-export const SpriteDragDropContainer = ({ children }) => {
+export const SpriteDragContainer = memo(({ id, children }) => {
     const {
         left,
         top,
@@ -12,17 +12,17 @@ export const SpriteDragDropContainer = ({ children }) => {
         display,
     } = useSelector((state) => {
         return {
-            left: state.sprite.present.sprite.left,
-            top: state.sprite.present.sprite.top,
-            rotate: state.sprite.present.sprite.rotate,
-            transition: state.sprite.present.sprite.transition,
-            display: state.sprite.present.sprite.display,
+            left: state.preview.present.sprite[id].left,
+            top: state.preview.present.sprite[id].top,
+            rotate: state.preview.present.sprite[id].rotate,
+            transition: state.preview.present.sprite[id].transition,
+            display: state.preview.present.sprite[id].display,
         };
     })
     const [{ isDragging }, drag] = useDrag(
         () => ({
             type: ItemTypes.SPRITE,
-            item: {},
+            item: { id },
             collect: (monitor) => ({
                 isDragging: monitor.isDragging(),
             }),
@@ -44,4 +44,4 @@ export const SpriteDragDropContainer = ({ children }) => {
         >
         {children} </div>
     )
-}
+})

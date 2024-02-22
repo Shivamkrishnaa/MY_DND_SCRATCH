@@ -9,7 +9,7 @@ import undoable from 'redux-undo';
 
 const rootReducer = combineReducers({
   dnd: blockReducer,
-  sprite: undoable(previewReducer, {
+  preview: undoable(previewReducer, {
     ignoreInitialState: false,
   }),
 });

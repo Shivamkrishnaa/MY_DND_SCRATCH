@@ -3,7 +3,11 @@ import { cloneDeep, uniqueId } from "lodash";
 import { ItemTypes } from '../utils';
 
 const globalSubstring = "g_";
+// const globalSpriteSubstring = "s_";
 const getGlobalUId = () => uniqueId(globalSubstring);
+const globalSpriteSubstring = "s_";
+
+const getSpriteUId = () => uniqueId(globalSpriteSubstring);
 
 const parseNumber = (value) => isNaN(Number(value)) ? 0 : Number(value);
 const getNumber = (value) => isNaN(Number(value)) ? 0 : Number(value).toString();
@@ -88,6 +92,29 @@ const initialGlobalState = {
 
 const defaultHeight = 100.04156036376953;
 const defaultWidth = 95.17898101806641;
+const defaultSprite = {
+    id: 1,
+    top: 20,
+    left: 80,
+    rotate: 0,
+    transition: '',
+    display: "block",
+    width: defaultWidth,
+    height: defaultHeight,
+    transform: 1,
+    bubble: {
+        text: false,
+        type: "say",
+        time: 0,
+    }
+}
+const getNewSprite = () => update(defaultSprite, {
+    $merge: {
+        id: getSpriteUId(),
+    }
+});
+export const initialSprite = getNewSprite();
+
 export function blockReducer(state = {
     globalBlocks: initialGlobalState,
     blocks: [
@@ -100,6 +127,8 @@ export function blockReducer(state = {
         //     }],
         // }
     ],
+    sprite: { [initialSprite.id]: defaultSprite },
+    selectedSpriteId: initialSprite.id,
 }
     , action = { payload: {} }) {
     let dropped;
@@ -375,7 +404,26 @@ export function blockReducer(state = {
         case "CLICK_PLAY":
             localStorage.setItem("b", JSON.stringify(state.blocks));
             return state;
-        default:
+            case "ADD_SPRITE":
+                const newSprite = getNewSprite();
+                return update(state, {
+                    sprite: {
+                        [newSprite.id]: { $set: newSprite },
+                    }
+                });
+            case "REMOVE_SPRITE":
+                return update(state, {
+                    sprite: {
+                        $unset: [action.payload.id],
+                    }
+                });
+            case "SELECT_SPRITE" :
+                return update(state, {
+                    selectedSpriteId: {
+                        $set: action.payload.id,
+                    }
+                });
+            default:
             return state;
     }
 }
