@@ -5,7 +5,7 @@ import { SpriteWiget } from "./Sprite/SpriteWiget";
  function PreviewArea() {
   return (
     <div
-    className="flex-none w-full p-2 h-2/3 transform rotate-0">
+    className="flex-none w-full my-3 mx-2 h-2/3 transform rotate-0 " style={{"overflow" : "auto"}}>
       <SpriteWiget/>
       <SpriteDropContainer/>
     </div>
