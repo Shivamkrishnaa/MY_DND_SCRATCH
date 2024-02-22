@@ -28,9 +28,9 @@ export const BlockDropContainer = () => {
   }));
   drop(ref);
   return (
-    <div ref={ref} className="m-2 midarea h-full w-full box transform rotate-0" >
+    <div ref={ref} className="h-full w-full box transform rotate-0" >
       <div className="flex flex-row items-start justify-between p-2" >
-        <div className="grow font-bold"> {"Midarea"} </div>
+        <div className="grow font-bold text-lg mb-4"> {"Midarea"} </div>
       </div>
       {new Array(blocksCount).fill(0).map((id, idx) => (<BlocksContainer idx={(idx)} key={idx} />))}
   </div>

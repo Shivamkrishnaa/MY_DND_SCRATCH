@@ -80,16 +80,12 @@ const BlockDragDropContainer = memo(({ idx, rootIdx }) => {
     }
   }, [isDragging, rootIdx, idx]);
 
-  let className = `item-${rootIdx}-${idx}`;
+  let className = `item-${rootIdx}-${idx}  first:pt-1 last:pt-1`;
+  
   if (isOver) {
     const isOnTop = checkIsHoveringAbove({ hoverBoundingRect: ref.current?.getBoundingClientRect(), clientOffset });
     isOnTopRef.current = isOnTop;
-    className += isOnTop ? " pt-10 bg-blue-500 " : " pb-10 bg-blue-500 "
-    // check to play item only on top
-    console.log('item?.action?.name=== action.name :', item, action.name);
-    // console.log('item?.action?.name :', 
-    // item?.action?.name=== action.name,
-    // action.name === PLAY);
+    className += isOnTop ? " pt-8 bg-gray-300 " : " pb-8 bg-gray-300 "
     if (
       (item?.action?.name=== action.name && action.name === PLAY) ||
       (item?.action?.name === PLAY && ((idx !== 0 ) || (idx === 0 && !isOnTop))) || 

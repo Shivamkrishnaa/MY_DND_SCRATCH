@@ -3,8 +3,6 @@ import { BlockDropContainer } from "./Block/BlockDropContainer";
 
 
 function MidArea() {
-  return (<>
-    <BlockDropContainer/>
-  </>);
+  return (<BlockDropContainer/>);
 };
 export default memo(MidArea);

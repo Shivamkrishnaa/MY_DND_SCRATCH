@@ -12,5 +12,9 @@ export const SidebarBlockDragContainer = memo(({ id }) => {
         type,
         item: { id: uId, idx: id, type, action },
     }), [uId, id, action]);
-    return (<div className='p-3' ref={drag}><Block action={action} uId={uId} id={id} /></div>);
+    return (<div className='mb-1'>
+        <div className='inline-block ' ref={drag} >
+            <Block action={action} uId={uId} id={id} />
+        </div>
+    </div>);
 })
