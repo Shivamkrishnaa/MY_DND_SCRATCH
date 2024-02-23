@@ -40,14 +40,14 @@ export const SpriteWidget = memo(() => {
     dispatch(ActionCreators.redo({ reducerName: 'sprite' })) // undo the last action
   }
   return (
-    <div className="flex flex-row whitespace-nowrap absolute">
-      <button className="position-absolute p-2 text-sm mb-1" onClick={startMove}>
+    <div className="flex flex-row whitespace-nowrap pt-3 position-absolute pl-3 text-sm">
+      <button className="border-r pr-2" onClick={startMove}>
         Play
       </button>
-      <button className="position-absolute p-2 text-sm mb-1" onClick={undo}>
+      <button className="border-r px-2" onClick={undo}>
         Undo
       </button>
-      <button className="position-absolute p-2 text-sm mb-1" onClick={redo}>
+      <button className="px-2" onClick={redo}>
         Redo
       </button>
     </div>

@@ -19,29 +19,34 @@ export const SpriteDragContainer = memo(({ id, children }) => {
             display: state.preview.present.sprite[id].display,
         };
     })
-    const [{ isDragging }, drag] = useDrag(
+    const [{ opacity }, drag] = useDrag(
         () => ({
             type: ItemTypes.SPRITE,
             item: { id },
             collect: (monitor) => ({
-                isDragging: monitor.isDragging(),
+                opacity: monitor.isDragging() ? 0.4 : 1,
             }),
         }),
         [],
-    )
-    if (isDragging) {
-        return <div ref={drag} />
+    );
+    if(display == "none") {
+        return <></>
     }
-    return (
-        <div ref={drag} className="box absolute " data-testid="box"
+    return (<>
+        <div ref={drag} data-testid="box"
+            className="relative inline-block"
             style={{
-                display,
-                rotate:`${rotate}deg`,
-                left: `calc(50% - 7rem + ${left}px)`,
-                top: `calc(50% - 7rem + ${top}px)`,
-                transition
+                top: `calc(60% - 14rem + ${top}px)`,
+                left: `calc(85% - 14.5rem + ${left}px)`,
+                rotate: `${rotate}deg`,
+                transition,
+                opacity,
             }}
         >
-        {children} </div>
+            <div className="inline-block">
+                {children}
+            </div>
+        </div>
+    </>
     )
 })
