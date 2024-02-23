@@ -35,7 +35,6 @@ export const MangageSprite = memo(() => {
                 <div className='flex flex-row space-2 overflow-x-scroll scroll-snap-x'>
                     {sprites.map((id,idx) => <ManageSpriteContainer id={id} key={idx}/>)}
                 </div>
-
             </div>
         </div>
     )

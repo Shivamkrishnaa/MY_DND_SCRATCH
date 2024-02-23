@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { PLAY } from '../../store/block';
 
-export const SpriteWiget = memo(() => {
+export const SpriteWidget = memo(() => {
   const dispatch = useDispatch();
   const blocksIdx = useSelector((state) => {
     return Object.entries(state.dnd.blocks).reduce((result, [id, blocks]) => {
@@ -53,3 +53,5 @@ export const SpriteWiget = memo(() => {
     </div>
   )
 });
+
+export default SpriteWidget;
