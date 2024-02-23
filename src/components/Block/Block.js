@@ -61,9 +61,9 @@ const renderBlockComponent = (action, handleChange, handleKeyDown) => {
   if (action?.value === undefined) {
     return <ButtonBlock handleChange={handleChange} {...action} />;
   } else if (Array.isArray(action?.value) && action?.value.length === 2) {
-    return <DesInputBlock handleChange={handleChange} {...action} />;
+    return <DesInputBlock handleKeyDown={handleKeyDown} handleChange={handleChange} {...action} />;
   } else if (Array.isArray(action?.value) && action?.value.length === 3) {
-    return <GlideInputBlock handleChange={handleChange} {...action} />;
+    return <GlideInputBlock handleKeyDown={handleKeyDown} handleChange={handleChange} {...action} />;
   } else if (typeof action?.value === "number" || typeof action?.value === "string") {
     return <UnoInputField handleKeyDown={handleKeyDown} handleChange={handleChange} {...action} />;
   }

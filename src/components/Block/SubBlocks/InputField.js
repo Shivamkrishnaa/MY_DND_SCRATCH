@@ -10,7 +10,11 @@ const InputField = ({ value, handleChange, handleKeyDown }) => {
   };
 
   const handleBlur = (e) => {
-    setWidth(String(value).length < defaultWidth ? String(value).length : defaultWidth);
+    if(String(value).length > defaultWidth) {
+      setWidth(defaultWidth);
+    } else {
+      setWidth(defaultWidth);
+    }
   };
 
   useEffect(() => {
