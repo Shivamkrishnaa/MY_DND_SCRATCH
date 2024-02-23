@@ -1,0 +1,8 @@
+.scroll-snap-x {
+    scroll-snap-type: x;
+  }
+  
+  /* Custom class for scroll-snap-align: center; */
+  .scroll-snap-center {
+    scroll-snap-align: center;
+  }

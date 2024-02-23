@@ -5,7 +5,7 @@ import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { ManageSpriteContainer } from './ManageSpriteContainer';
 import { getSpriteUId } from '../../store/block';
 
-
+import "./manageSprite.css";
 
 export const MangageSprite = memo(() => {
     const dispatch = useDispatch();
@@ -32,7 +32,7 @@ export const MangageSprite = memo(() => {
                 </button>
             </div>
             <div className='mt-2 border border-gray-300 rounded p-2 flex flex-column justify-start items-center'>
-                <div className='flex flex-row space-2 overflow-x-scroll'>
+                <div className='flex flex-row space-2 overflow-x-scroll scroll-snap-x'>
                     {sprites.map((id,idx) => <ManageSpriteContainer id={id} key={idx}/>)}
                 </div>
 
