@@ -12,7 +12,7 @@ export const ManageSpriteContainer = memo(({ id }) => {
     const selectSprite = useCallback(() => {
         dispatch({
             type: "SELECT_SPRITE",
-            payload: { id },
+            payload: { spriteId: id },
         });
     }, [id]);
     const removeSprite = useCallback(() => {

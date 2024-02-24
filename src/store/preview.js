@@ -25,8 +25,10 @@ export const THINK_BUBBLE = "THINK_BUBBLE";
 export const SAY_BUBBLE = "SAY_BUBBLE";
 export const THINK_BUBBLE_FOR = "THINK_BUBBLE_FOR";
 export const SAY_BUBBLE_FOR = "SAY_BUBBLE_FOR";
+
+export const timerEvents = [THINK_BUBBLE_FOR, SAY_BUBBLE_FOR, GLIDE_TO_COORDINATES]
 export function previewReducer(state = {
-    sprite: { 
+    sprite: {
         // [initialSprite.id]: cloneDeep(initialSprite) 
     },
     selectedSpriteId: null,
@@ -52,11 +54,11 @@ export function previewReducer(state = {
                 }
             });
         case "REMOVE_SPRITE":
-            if(selectedSpriteId === action.payload.id) {
+            if (selectedSpriteId === action.payload.id) {
                 const filteredArray = newState.selectedSpriteId = Object.keys(newState.sprite)
-                .filter(r=>r !== action.payload.id)
-                
-                newState.selectedSpriteId =  filteredArray[filteredArray.length - 1] || null;
+                    .filter(r => r !== action.payload.id)
+
+                newState.selectedSpriteId = filteredArray[filteredArray.length - 1] || null;
             }
             return update(newState, {
                 sprite: {
@@ -66,7 +68,7 @@ export function previewReducer(state = {
         case "ADD_SPRITE":
             const newSprite = getNewSprite();
             return update(newState, {
-                selectedSpriteId: {$set: newSprite.id,},
+                selectedSpriteId: { $set: newSprite.id, },
                 sprite: {
                     [newSprite.id]: {
                         $set: newSprite
@@ -145,7 +147,7 @@ export function previewReducer(state = {
                     return update(newState, {
                         sprite: {
                             [action.payload.id]: {
-                                $merge: {
+                                $merge: value === false ? { transition: '' } : {
                                     transition: `all ${value[0]}s ease-in-out`,
                                     left: parseNumber(value[1]),
                                     top: parseNumber(value[2]),

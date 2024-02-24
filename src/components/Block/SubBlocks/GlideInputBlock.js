@@ -23,7 +23,12 @@ export const GlideInputBlock = ({ value, handleChange, handleKeyDown }) => {
                     }
                 })} />
             {" y: "}
-            <InputField value={value[2]} handleChange={(e) => handleChange({ target: { value: [value[0], value[1], e.target.value] } })} />
+            <InputField
+                handleKeyDown={handleKeyDown}
+                value={value[2]}
+                handleChange={(e) => handleChange({
+                    target: { value: [value[0], value[1], e.target.value] }
+                })} />
         </span>
     )
 }

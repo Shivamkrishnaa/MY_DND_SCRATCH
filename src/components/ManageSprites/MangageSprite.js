@@ -29,7 +29,8 @@ export const MangageSprite = memo(() => {
             </div>
             <div className='mt-2 border border-gray-300 rounded p-2 flex flex-column justify-start items-center'>
                 <div className='flex flex-row space-2 overflow-x-scroll scroll-snap-x'>
-                    {sprites.map((id,idx) => <ManageSpriteContainer id={id} key={idx}/>)}
+                    {sprites.length === 0 && <div className='pt-10 pb-10 pl-3 text-sm text-gray-300'>Add a sprite</div>}
+                    {sprites.map((id, idx) => <ManageSpriteContainer id={id} key={idx} />)}
                 </div>
             </div>
         </div>

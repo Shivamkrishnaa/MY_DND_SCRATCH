@@ -1,85 +1,61 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import DesInputBlock from './SubBlocks/DesInputBlock';
 import ButtonBlock from './SubBlocks/ButtonBlock';
 import GlideInputBlock from './SubBlocks/GlideInputBlock';
 import UnoInputField from './SubBlocks/UnoInputField';
-import { SAY_BUBBLE, SAY_BUBBLE_FOR, THINK_BUBBLE, THINK_BUBBLE_FOR } from '../../store/block';
+import { useBlockColor, useBlockEvents, useBlockInputChanges } from '../../hooks/useBlock';
+
 
 export const Block = memo(({ id, action, rootId }) => {
-  const [timerId, setTimerId] = useState(null);
   const selectedSpriteId = useSelector((state) => state.preview.present.selectedSpriteId);
   const dispatch = useDispatch();
-  const clearBubble = function () {
+
+  const resetSprite = () => {
     dispatch({
-      type: "CLICK_PLAY",
+      type: 'CLICK_PLAY',
       payload: {
         id: selectedSpriteId,
         action: {
           ...action,
           value: false,
         },
-      }
+      },
     });
-  }
-  const handleClick = useCallback((e) => {
-    if (e.target.tagName === 'INPUT' || !selectedSpriteId) return;
-    if([THINK_BUBBLE, THINK_BUBBLE_FOR,SAY_BUBBLE, SAY_BUBBLE_FOR].includes(action.name)) {
-      if (timerId) {
-        clearTimeout(timerId); // Clear the old timeout
-      }
-    }
-    if([THINK_BUBBLE_FOR, SAY_BUBBLE_FOR].includes(action.name)) {
-      
-      setTimerId(setTimeout(()=>{
-        clearBubble();
-      },action.value[1]*1000));
-    }
-    dispatch({
-      type: "CLICK_PLAY",
-      payload: {
-        id: selectedSpriteId,
-        action,
-      }
-    });
-  }, [selectedSpriteId, action]);
+  };
 
-  const handleKeyDown = useCallback((e) => {
-    if (e.key === 'Enter' && selectedSpriteId) {
-      if([THINK_BUBBLE, THINK_BUBBLE_FOR,SAY_BUBBLE, SAY_BUBBLE_FOR].includes(action.name)) {
-        if (timerId) {
-          clearTimeout(timerId); // Clear the old timeout
-        }
-      }
-      if([THINK_BUBBLE_FOR, SAY_BUBBLE_FOR].includes(action.name)) {
-        setTimerId(setTimeout(()=>{
-          clearBubble();
-        },action.value[1]*1000));
-      }
-      dispatch({
-        type: "CLICK_PLAY",
-        payload: {
-          id: selectedSpriteId,
-          action,
-        }
-      });
-    }
-  }, [selectedSpriteId, action]);
+  const { timerId, triggerEvent } = useBlockEvents({
+    action,
+    selectedSpriteId,
+    dispatch,
+    resetSprite,
+  });
 
-  const handleChange = useCallback((e) => {
-    dispatch({
-      type: "MODIFY_BLOCK",
-      payload: {
-        spriteId: selectedSpriteId,
-        id,
-        rootId,
-        name: action.name,
-        value: e.target.value,
-      }
-    });
-  }, [id, rootId, action]);
+  const handleChange = useBlockInputChanges({
+    selectedSpriteId,
+    dispatch,
+    id,
+    rootId,
+    action,
+  });
 
-  const getColor = () => action.color || "blue";
+  const getColor = useBlockColor(action);
+
+  const handleClick = useCallback(
+    (e) => {
+      if (e.target.tagName === 'INPUT' || !selectedSpriteId) return;
+      triggerEvent();
+    },
+    [selectedSpriteId, triggerEvent]
+  );
+
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (!selectedSpriteId) return;
+      e.key === 'Enter' && triggerEvent();
+    },
+    [selectedSpriteId, triggerEvent]
+  );
 
   return (
     <div
@@ -99,7 +75,7 @@ const renderBlockComponent = (action, handleChange, handleKeyDown) => {
     return <DesInputBlock handleKeyDown={handleKeyDown} handleChange={handleChange} {...action} />;
   } else if (Array.isArray(action?.value) && action?.value.length === 3) {
     return <GlideInputBlock handleKeyDown={handleKeyDown} handleChange={handleChange} {...action} />;
-  } else if (typeof action?.value === "number" || typeof action?.value === "string") {
+  } else if (typeof action?.value === 'number' || typeof action?.value === 'string') {
     return <UnoInputField handleKeyDown={handleKeyDown} handleChange={handleChange} {...action} />;
   }
   return <></>;
