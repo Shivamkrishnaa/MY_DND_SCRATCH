@@ -5,7 +5,7 @@ import BlockList from './BlockList';
 
 const BlocksContainer = ({ idx }) => {
   const { top, left } = useSelector((state) => {
-    const selectedSpriteId = state.dnd.selectedSpriteId;
+    const selectedSpriteId = state.preview.present.selectedSpriteId;
     return state.dnd.blocks[selectedSpriteId]?.[idx]?.position || {};
   });
   return (

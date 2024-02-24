@@ -1,16 +1,14 @@
-import React from "react";
+import React, { memo } from "react";
 import { useSelector } from "react-redux";
-const defaultHeight = 100.04156036376953/2;
-const defaultWidth = 95.17898101806641/2;
 
-export default function CatSprite() {
-  const { height, width, transform } = useSelector((state)=>{
+export const CatSprite = memo(({id}) => {
+  const { height, width, transform } = useSelector((state) => {
     return {
-      height: state.sprite.present.sprite.height || defaultHeight,
-      width: state.sprite.present.sprite.width || defaultWidth,
-      transform: state.sprite.present.sprite.transform || 0.5,
-  };
-  });
+      height: state.preview.present.sprite[id].height,
+      width: state.preview.present.sprite[id].width,
+      transform: state.preview.present.sprite[id].transform,
+    };
+  })
   return (
     <svg
       xlinkTitle={"Cat sprite"}
@@ -21,7 +19,7 @@ export default function CatSprite() {
       version="1.1"
       xmlSpace="preserve"
     >
-    <g transform={`scale(${transform})`}>
+      <g transform={`scale(${transform})`}>
         <g id="Page-1" stroke="none" fillRule="evenodd">
           <g id="costume1">
             <g id="costume1.1">
@@ -192,4 +190,4 @@ export default function CatSprite() {
       </g>
     </svg>
   );
-}
+});

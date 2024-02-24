@@ -7,11 +7,10 @@ import BlockContainer from './BlockContainer';
 
 const styleId = "block-style";
 const BlockDragDropContainer = memo(({ idx, rootIdx }) => {
-  const { id, action, type } = useSelector((state) => {
-    const selectedSpriteId = state.dnd.selectedSpriteId;
-    return state.dnd.blocks[selectedSpriteId]?.[rootIdx]?.children?.[idx] || {};
+  const [{ id, action, type }, spriteId] = useSelector((state) => {
+    const selectedSpriteId = state.preview.present.selectedSpriteId;
+    return [state.dnd.blocks[selectedSpriteId]?.[rootIdx]?.children?.[idx] || {}, selectedSpriteId];
   });
-  // console.log(type, id, action );
   const ref = useRef(null);
   const isOnTopRef = useRef(false);
   const dispatch = useDispatch();
@@ -22,6 +21,7 @@ const BlockDragDropContainer = memo(({ idx, rootIdx }) => {
         if (!!monitor.didDrop() && !!monitor.getDropResult()) return;
         if(isOnTopRef.current === null) return;
         const payload = {
+          spriteId,
           dragged: item, // item which is dragged
           dropped: { idx, rootIdx },
           addAfterItemIdx: isOnTopRef.current,
@@ -47,7 +47,8 @@ const BlockDragDropContainer = memo(({ idx, rootIdx }) => {
     end: (item, monitor) => {
       if (!monitor.didDrop()) {
         const payload = {
-          idx, rootIdx
+          idx, rootIdx,
+          spriteId,
         };
         dispatch({ type: "DELETE", payload });
       }

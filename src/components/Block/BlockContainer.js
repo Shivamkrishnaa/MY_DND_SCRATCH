@@ -4,7 +4,7 @@ import { Block } from './Block';
 
 export const BlockContainer = ({ rootIdx, idx }) => {
     const action = useSelector((state) => {
-        const selectedSpriteId = state.dnd.selectedSpriteId;
+        const selectedSpriteId = state.preview.present.selectedSpriteId;
         return state.dnd.blocks[selectedSpriteId]?.[rootIdx]?.children?.[idx].action || {};
       });
   return (

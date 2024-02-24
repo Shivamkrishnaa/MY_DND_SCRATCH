@@ -10,7 +10,9 @@ import undoable from 'redux-undo';
 const rootReducer = combineReducers({
   dnd: blockReducer,
   preview: undoable(previewReducer, {
-    ignoreInitialState: false,
+    // ignoreInitialState: false,
+    neverSkipReducer: false, // prevent undoable from skipping the reducer on undo/redo and clearHistoryType actions
+    syncFilter: false
   }),
 });
 

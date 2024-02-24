@@ -10,9 +10,6 @@ export const SidebarBlockDragContainer = memo(({ id }) => {
     });
     const [, drag] = useDrag(() => ({
         type,
-        options: {
-            dropEffect: 'copy',
-        },
         item: { id: uId, idx: id, type, action },
     }), [uId, id, action]);
     return (<div className='mb-1'>

@@ -1,22 +1,19 @@
 
 p.bubble {
-	left: 70%;
+	right: -2rem;
 	position: relative;
 	text-align: center;
-	line-height: 1.4em;
-	margin: 40px auto;
+	/* line-height: 1.4em; */
+	/* margin: 40px auto; */
 	background-color: #fff;
-	border: 3px solid #333;
+	border: 1px solid #333;
 	border-radius: 30px;
-	font-family: sans-serif;
-	padding: 0.5rem;
-	font-size: large;
+	/* font-family: sans-serif; */
+	padding: 0.35rem;
+	/* font-size: large; */
 }
 
-p.thought {
-	border-radius: 200px;
-	padding: 0.5rem;
-}
+
 
 p.bubble:before,
 p.bubble:after {
@@ -28,36 +25,48 @@ p.bubble:after {
 
 p.speech:before {
 	left: 30px;
-	bottom: -50px;
-	border: 25px solid;
-	border-color: #333 transparent transparent #333;
+    bottom: -50px;
+    border: 25px solid;
+    border-color: #333 transparent transparent #333;
 }
 
 p.speech:after {
-	left: 38px;
-	bottom: -30px;
-	border: 15px solid;
-	border-color: #fff transparent transparent #fff;
+	left: 32px;
+    bottom: -46px;
+    border: 23px solid;
+    border-color: #fff transparent transparent #fff;
 }
 
+p.thought {
+	border-radius: 200px;
+	padding: 0.5rem;
+}
 p.thought:before,
 p.thought:after {
 	left: 10px;
-	bottom: -30px;
-	width: 40px;
-	height: 40px;
-	background-color: #fff;
-	border: 3px solid #333;
+    bottom: -20px;
+    width: 25px;
+    height: 25px;
+    background-color: #fff;
+    border: 1px solid #333;
+    border-radius: 28px;
+
+	/* left: 10px;
+	bottom: -30px; */
+	/* width: 40px;
+	height: 40px; */
+	/* background-color: #fff; */
+	/* border: 1px solid #333; */
 	-webkit-border-radius: 28px;
 	-moz-border-radius: 28px;
-	border-radius: 28px;
+	/* border-radius: 28px; */
 }
 
 p.thought:after {
-	width: 20px;
-	height: 20px;
-	left: 5px;
-	bottom: -40px;
+	width: 15px;
+    height: 15px;
+    left: 5px;
+    bottom: -27px;
 	-webkit-border-radius: 18px;
 	-moz-border-radius: 18px;
 	border-radius: 18px;

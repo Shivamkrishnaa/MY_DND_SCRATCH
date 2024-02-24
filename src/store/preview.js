@@ -1,5 +1,5 @@
 import update from 'immutability-helper';
-import { defaultSpriteData, initialSprite } from './block';
+import { defaultHeight, defaultSpriteData, defaultWidth, getNewSprite, initialSprite } from './block';
 import { cloneDeep } from 'lodash';
 
 const parseNumber = (value) => isNaN(Number(value)) ? 0 : Number(value);
@@ -26,43 +26,82 @@ export const SAY_BUBBLE = "SAY_BUBBLE";
 export const THINK_BUBBLE_FOR = "THINK_BUBBLE_FOR";
 export const SAY_BUBBLE_FOR = "SAY_BUBBLE_FOR";
 export function previewReducer(state = {
-    sprite: { [initialSprite.id]: cloneDeep(initialSprite) },
+    sprite: { 
+        // [initialSprite.id]: cloneDeep(initialSprite) 
+    },
+    selectedSpriteId: null,
+    // initialSprite.id,
+    // initialSprite.id,
 }, action = { payload: {} }) {
-
+    let newState = state;
+    let selectedSpriteId = state.selectedSpriteId;
     switch (action.type) {
         case "SPRITE_MOVE":
-            return update(state, {
+            return update(newState, {
+                selectedSpriteId: {
+                    $set: action.payload.spriteId
+                },
                 sprite: {
                     [action.payload.spriteId]: {
                         $merge: {
-                            left: state.sprite[action.payload.spriteId].left + action.payload.delta.x,
-                            top: state.sprite[action.payload.spriteId].top + action.payload.delta.y,
+                            left: newState.sprite[action.payload.spriteId].left + action.payload.delta.x,
+                            top: newState.sprite[action.payload.spriteId].top + action.payload.delta.y,
+                            transition: defaultSpriteData.transition,
                         }
                     }
                 }
             });
-        case "ADD_SPRITE":
-            return update(state, {
+        case "REMOVE_SPRITE":
+            if(selectedSpriteId === action.payload.id) {
+                const filteredArray = newState.selectedSpriteId = Object.keys(newState.sprite)
+                .filter(r=>r !== action.payload.id)
+                
+                newState.selectedSpriteId =  filteredArray[filteredArray.length - 1] || null;
+            }
+            return update(newState, {
                 sprite: {
-                    [action.payload.spriteId]: {
-                        $set: {
-                            ...cloneDeep(defaultSpriteData)
-                        }
-                    },
+                    $unset: [action.payload.id],
                 }
-            })
+            });
+        case "ADD_SPRITE":
+            const newSprite = getNewSprite();
+            return update(newState, {
+                selectedSpriteId: {$set: newSprite.id,},
+                sprite: {
+                    [newSprite.id]: {
+                        $set: newSprite
+                    },
+                },
+            });
+        case "SELECT_SPRITE":
+            return update(state, {
+                selectedSpriteId: {
+                    $set: action.payload.spriteId,
+                },
+            });
         case "CLICK_PLAY":
             const blocks = JSON.parse(localStorage.getItem("b"));
-            console.log('blocks :', blocks);
             const { idx, rootIdx, id } = action.payload;
-            const { name, value } = action.payload.action ? action.payload.action : blocks[id][rootIdx].children[idx].action;
+            const { name, value, type } = action.payload.action ? action.payload.action : blocks[id][rootIdx].children[idx].action;
+            if (!newState.sprite.hasOwnProperty(id)) {
+                newState = update(newState, {
+                    sprite: {
+                        [id]: {
+                            $set: {
+                                ...cloneDeep(defaultSpriteData),
+                            },
+                        },
+                    },
+                });
+            }
+
             switch (name) {
                 case MOVE:
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [id]: {
                                 $merge: {
-                                    left: (parseNumber(state.sprite[id].left) + parseNumber(value)),
+                                    left: (parseNumber(newState.sprite[id].left) + parseNumber(value)),
                                 },
                             }
                         },
@@ -70,27 +109,27 @@ export function previewReducer(state = {
                 // setSprite(sprite => ({ ...sprite, left: (sprite.left + Number(r.action.value)) }));
                 // break;
                 case ROTATE_CLOCKWISE:
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
-                                    rotate: parseNumber(state.sprite[action.payload.id].rotate) + parseNumber(value),
+                                    rotate: parseNumber(newState.sprite[action.payload.id].rotate) + parseNumber(value),
                                 },
                             },
                         }
                     });
                 case ROTATE_ANTICLOCKWISE:
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
-                                    rotate: parseNumber(state.sprite[action.payload.id].rotate) - Math.abs(parseNumber(value)),
+                                    rotate: parseNumber(newState.sprite[action.payload.id].rotate) - Math.abs(parseNumber(value)),
                                 },
                             }
                         },
                     });
                 case "GO_TO_COORDINATES":
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
@@ -103,7 +142,7 @@ export function previewReducer(state = {
                 // setSprite(sprite => ({ ...sprite, left: Number(r.action.value[0]), top: Number(r.action.value[1]) }));
                 // break;
                 case "GLIDE_TO_COORDINATES":
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
@@ -117,7 +156,7 @@ export function previewReducer(state = {
                 // setSprite(sprite => ({ ...sprite,  }));
                 // break;
                 case "POINT_IN_DIRECTION":
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
@@ -127,11 +166,11 @@ export function previewReducer(state = {
                         }
                     });
                 case "CHANGE_X_BY":
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
-                                    left: (state.sprite[action.payload.id].left + parseNumber(value)),
+                                    left: (newState.sprite[action.payload.id].left + parseNumber(value)),
                                 },
                             }
                         }
@@ -139,11 +178,11 @@ export function previewReducer(state = {
                 // setSprite(sprite => ({ ...sprite, left: (sprite.left + Number(r.action.value)) }));
                 // break;
                 case "CHANGE_Y_BY":
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
-                                    left: (state.sprite[action.payload.id].top + parseNumber(value)),
+                                    top: (newState.sprite[action.payload.id].top + parseNumber(value)),
                                 },
                             }
                         }
@@ -151,7 +190,7 @@ export function previewReducer(state = {
                 // setSprite(sprite => ({ ...sprite, top: (sprite.top + Number(r.action.value)) }));
                 // break;
                 case "SET_X_TO":
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
@@ -163,7 +202,7 @@ export function previewReducer(state = {
                 // setSprite(sprite => ({ ...sprite, left: r.action.value }));
                 // break;
                 case "SET_Y_TO":
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
@@ -175,19 +214,19 @@ export function previewReducer(state = {
                     // setSprite(sprite => ({ ...sprite, top: r.action.value }));
                     break;
                 case CHANGE_SIZE_BY:
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
-                                    height: (state.sprite[action.payload.id].height +
+                                    height: (newState.sprite[action.payload.id].height +
                                         // getNumber(value) +
                                         defaultHeight * (isNaN(Number(value)) ? 1 : Number(value))
                                     ),
-                                    width: (state.sprite[action.payload.id].width +
+                                    width: (newState.sprite[action.payload.id].width +
                                         // getNumber(value) +
                                         defaultHeight * (isNaN(Number(value)) ? 1 : Number(value))
                                     ),
-                                    transform: (state.sprite[action.payload.id].transform +
+                                    transform: (newState.sprite[action.payload.id].transform +
                                         // getNumber(value) +
                                         (isNaN(Number(value)) ? 1 : Number(value))
                                     ),
@@ -203,22 +242,22 @@ export function previewReducer(state = {
                 // }));
                 // break;
                 case CHANGE_SIZE:
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
                                     height: (
-                                        // state.sprite[action.payload.id].height +
+                                        // newState.sprite[action.payload.id].height +
                                         // getNumber(value) +
                                         defaultHeight * (isNaN(Number(value)) ? 1 : Number(value))
                                     ) / 100,
                                     width: (
-                                        // state.sprite[action.payload.id].width +
+                                        // newState.sprite[action.payload.id].width +
                                         // getNumber(value) +
-                                        defaultHeight * (isNaN(Number(value)) ? 1 : Number(value))
+                                        defaultWidth * (isNaN(Number(value)) ? 1 : Number(value))
                                     ) / 100,
                                     transform: (
-                                        // state.sprite[action.payload.id].transform +
+                                        // newState.sprite[action.payload.id].transform +
                                         // getNumber(value) +
                                         (isNaN(Number(value)) ? 1 : Number(value))
                                     ) / 100,
@@ -234,7 +273,7 @@ export function previewReducer(state = {
                 // }));
                 // break;
                 case HIDE_SVG:
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
@@ -250,7 +289,7 @@ export function previewReducer(state = {
                 // break;
                 case SHOW_SVG:
 
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 $merge: {
@@ -266,12 +305,12 @@ export function previewReducer(state = {
                 // break;
                 case THINK_BUBBLE:
                     // clearTimers(timerIds)  
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 bubble: {
                                     $merge: {
-                                        think: "think",
+                                        type,
                                         text: value,
                                     }
                                 },
@@ -289,12 +328,12 @@ export function previewReducer(state = {
                     break;
                 case SAY_BUBBLE:
                     // clearTimers(timerIds)  
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 bubble: {
                                     $merge: {
-                                        think: "say",
+                                        type,
                                         text: value,
                                     },
                                 },
@@ -313,7 +352,7 @@ export function previewReducer(state = {
                 case THINK_BUBBLE_FOR:
                     // timerIds.push(setTimeout(() => {
                     //     // dispatch
-                    //     update(state, {
+                    //     update(newState, {
                     //         sprite: {
                     //             style: {
                     //                 svg: {
@@ -332,12 +371,12 @@ export function previewReducer(state = {
                     //     // setSpriteSvg(spriteSvg => ({ ...spriteSvg, bubble: { ...spriteSvg.bubble, text: "", time: 0 } }))
                     // }, value[1] * 1000));
 
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 bubble: {
                                     $merge: {
-                                        think: "think",
+                                        type,
                                         text: value[0],
                                         time: value[1],
                                     },
@@ -358,12 +397,12 @@ export function previewReducer(state = {
                 // }, r.action.value[1] * 1000));
                 // break;
                 case SAY_BUBBLE_FOR:
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 bubble: {
                                     $merge: {
-                                        think: "say",
+                                        type,
                                         text: value[0],
                                         time: value[1],
                                     },
@@ -385,7 +424,7 @@ export function previewReducer(state = {
                 // break;
 
                 default:
-                    return update(state, {
+                    return update(newState, {
                         sprite: {
                             [action.payload.id]: {
                                 bubble: {
@@ -400,9 +439,8 @@ export function previewReducer(state = {
                     });
                 // break;
             };
-
         default:
-            return state;
+            return newState;
     }
 }
 

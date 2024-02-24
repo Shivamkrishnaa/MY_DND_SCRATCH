@@ -8,15 +8,17 @@ export const BlockDropContainer = () => {
 
   const ref = useRef(null);
   const dispatch = useDispatch();
-  const blocksCount = useSelector((state) => {
-    const selectedSpriteId = state.dnd.selectedSpriteId;
-    return state.dnd.blocks[selectedSpriteId].length;
+  const [blocksCount, spriteId] = useSelector((state) => {
+    const selectedSpriteId = state.preview.present.selectedSpriteId;
+    return [state.dnd.blocks?.[selectedSpriteId]?.length || 0, selectedSpriteId];
   });
   const [, drop] = useDrop(() => ({
     accept: ItemTypes.BLOCK,
     drop(item, monitor) {
       if (!!monitor.didDrop() && !!monitor.getDropResult()) return;
+      if(!spriteId) {alert("Add a sprite first.");return;}
       const payload = {
+        spriteId,
         dropped: item,
         position: {
           initialPosition: monitor.getInitialSourceClientOffset(),
@@ -25,7 +27,7 @@ export const BlockDropContainer = () => {
       };
       dispatch({ type: "MOVE_TO_MID", payload });
     },
-  }));
+  }),[spriteId]);
   drop(ref);
   return (
     <div ref={ref} className="h-full w-full box transform rotate-0" >

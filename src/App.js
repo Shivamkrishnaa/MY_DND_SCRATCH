@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import MidArea from "./components/MidArea";
 import PreviewArea from "./components/PreviewArea";
 import { MangageSprite } from "./components/ManageSprites/MangageSprite";
+import SpriteWidget from "./components/Sprite/SpriteWidget";
 const styles = {
   position: "relative",
 };
@@ -15,7 +16,8 @@ export default function App() {
           <Sidebar /> 
           <MidArea />
         </div>
-        <div className="w-1/3 bg-white border-t border-l ">
+        <div className="w-1/3 bg-white ">
+          <SpriteWidget/>
             <PreviewArea />
             <MangageSprite/>
         </div>

@@ -1,10 +1,11 @@
 import React, { memo } from "react";
+import { defaultHeight, defaultTransform, defaultWidth } from "../../store/block";
 
 export const CatSprite = memo(() => {
   const { height, width, transform } = {
-    height: (100.04156036376953 / 2),
-    width: (95.17898101806641 / 2),
-    transform: 0.5
+    height: (defaultHeight / 2),
+    width: (defaultWidth/ 2),
+    transform: (defaultTransform/2),
   };
   return (
     <svg

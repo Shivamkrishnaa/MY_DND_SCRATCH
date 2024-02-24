@@ -4,7 +4,7 @@ import BlockDragDropContainer from './BlockDragDropContainer';
 
 const BlockList = ({ idx: rootIdx }) => {
   const childrensCount = useSelector((state) => {
-    const selectedSpriteId = state.dnd.selectedSpriteId;
+    const selectedSpriteId = state.preview.present.selectedSpriteId;
     return state.dnd.blocks[selectedSpriteId]?.[rootIdx]?.children?.length || 0;
   });
   if (!childrensCount) return <></>

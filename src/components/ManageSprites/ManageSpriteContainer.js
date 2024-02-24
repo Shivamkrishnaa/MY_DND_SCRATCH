@@ -7,7 +7,7 @@ import { CatSprite } from './CatSprite';
 export const ManageSpriteContainer = memo(({ id }) => {
     const dispatch = useDispatch();
     const selectedSpriteId = useSelector((state) => {
-        return state.dnd.selectedSpriteId;
+        return state.preview.present.selectedSpriteId;
     });
     const selectSprite = useCallback(() => {
         dispatch({
@@ -15,16 +15,16 @@ export const ManageSpriteContainer = memo(({ id }) => {
             payload: { id },
         });
     }, [id]);
-    const removeSprite = useCallback((e) => {
+    const removeSprite = useCallback(() => {
         dispatch({
             type: "REMOVE_SPRITE",
             payload: { id },
         });
-        e.target.stopPropogation();
     }, [id]);
     return (
-        <div onClick={selectSprite} className='scroll-snap-center flex flex-col justify-center items-center cursor-pointer border-r p-2 hover:bg-blue-300 rounded'>
+        <div className='scroll-snap-center flex flex-col justify-center items-center cursor-pointer border-r p-2 hover:bg-blue-300 rounded'>
             <div
+                onClick={selectSprite} 
                 className={"basis-3/4 focus:outline-none focus:ring font-bold py-1 px-2 p-4 cursor-pointer" +
                     (selectedSpriteId === id ? " outline-none border-b-2 border-blue-300 " : "")}>
                 <CatSprite />

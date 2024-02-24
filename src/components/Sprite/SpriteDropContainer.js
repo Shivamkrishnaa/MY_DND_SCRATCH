@@ -29,7 +29,7 @@ export const SpriteDropContainer = memo(() => {
 
     
     return (
-        <div className='h-full w-full border overflow-auto' ref={drop}>
+        <div className='h-full w-full border overflow-x-auto' ref={drop}>
             {sprites.map((id, idx)=> <>
                 <BubbleContainer id={id}/>
                 <SpriteDragContainer id={id} idx={idx}>

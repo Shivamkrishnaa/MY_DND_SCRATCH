@@ -10,15 +10,11 @@ import "./manageSprite.css";
 export const MangageSprite = memo(() => {
     const dispatch = useDispatch();
     const sprites = useSelector((state) => {
-        return Object.keys(state.dnd.sprite);
+        return Object.keys(state.preview.present.sprite);
     });
     const addSprite = () => {
-        const spriteId = getSpriteUId();
         dispatch({
-            type: "ADD_SPRITE",
-            payload: {
-                spriteId,
-            }
+            type: "ADD_SPRITE"
         });
     }
     return (

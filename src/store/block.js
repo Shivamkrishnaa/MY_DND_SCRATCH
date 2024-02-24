@@ -83,23 +83,25 @@ const initialGlobalState = {
 
     13: { id: 13, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Looks", action: { color: "purple", name: HIDE_SVG, title: " hide " } },
     14: { id: 14, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Looks", action: { color: "purple", name: SHOW_SVG, title: " show " } },
-    15: { id: 15, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Looks", action: { color: "purple", name: THINK_BUBBLE, value: "hmm", title: " think {x} " } },
-    16: { id: 16, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Looks", action: { color: "purple", name: SAY_BUBBLE, value: "Hii", title: " say {x} " } },
-    17: { id: 17, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Events", action: { color: "yellow", name: PLAY, title: " play " } },
+    15: { id: 15, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Looks", action: { color: "purple", name: THINK_BUBBLE, value: "hmm", title: " think {x} ", type: "thought" } },
+    16: { id: 16, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Looks", action: { color: "purple", name: THINK_BUBBLE_FOR, value: ["hmmm...", 1], type: "thought", title: " think  {x} for {x} seconds " } },
+    17: { id: 17, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Looks", action: { color: "purple", name: SAY_BUBBLE, value: "Hii", title: " say {x} ", type: "speech" } },
+    18: { id: 18, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Looks", action: { color: "purple", name: SAY_BUBBLE_FOR, value: ["Hii", 1], title: " say {x} for {x} seconds ", type: "speech" } },
+    19: { id: 19, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Events", action: { color: "yellow", name: PLAY, title: " play " } },
 };
-// 16: { id: 16, uId: getGlobalUId(), type: ItemTypes.BLOCK, action: { color: "purple", name: THINK_BUBBLE_FOR, value: ["hmmm...", 1], title: " think  {x} for {x} seconds " } },
 
-const defaultHeight = 100.04156036376953;
-const defaultWidth = 95.17898101806641;
+export const defaultHeight = 100.04156036376953;
+export const defaultWidth = 95.17898101806641;
+export const defaultTransform = 1;
 export const defaultSpriteData = {
-    top: 20,
-    left: 80,
+    top: 0,
+    left: 0,
     rotate: 0,
     transition: '',
     display: "block",
     width: defaultWidth,
     height: defaultHeight,
-    transform: 1,
+    transform: defaultTransform,
     bubble: {
         text: false,
         type: "say",
@@ -110,7 +112,7 @@ const defaultSprite = {
     id: 1,
     ...defaultSpriteData,
 }
-const getNewSprite = () => update(defaultSprite, {
+export const getNewSprite = () => update(defaultSprite, {
     $merge: {
         id: getSpriteUId(),
     }
@@ -127,25 +129,36 @@ const getDefaultNewBlock = () => ({
 export function blockReducer(state = {
     globalBlocks: initialGlobalState,
     blocks: {
-        [initialSprite.id]: [
-            getDefaultNewBlock(),
-        ],
+        // [initialSprite.id]: [
+        //     getDefaultNewBlock(),
+        // ],
     },
-    sprite: { [initialSprite.id]: defaultSprite },
-    selectedSpriteId: initialSprite.id,
+    // sprite: { [initialSprite.id]: defaultSprite },
+    // spriteId: initialSprite.id,
 }
     , action = { payload: {} }) {
     let dropped;
     let dragged;
     let position;
-    let selectedSpriteId = state.selectedSpriteId;
+    let spriteId = action?.payload?.spriteId;
     dropped = action?.payload?.dropped;
     dragged = action?.payload?.dragged;
     position = action?.payload?.position;
+    let newState = state;
+    if(spriteId) {
+        if(!state.blocks.hasOwnProperty(spriteId)) {
+            
+            newState = update(newState,{
+                blocks: {
+                    [spriteId]: { $set: []},
+                }
+            });
+        }
+    }
     switch (action.type) {
         case "MOVE_TO_MID":
             if (isGlobalBlock(dropped)) {
-                return update(state, {
+                return update(newState, {
                     globalBlocks: {
                         [action.payload.dropped.idx]: {
                             uId: {
@@ -154,7 +167,7 @@ export function blockReducer(state = {
                         },
                     },
                     blocks: {
-                        [selectedSpriteId]: {
+                        [spriteId]: {
                             $push: [
                                 {
                                     position: {
@@ -174,14 +187,13 @@ export function blockReducer(state = {
                     },
                 });
             } else {
-                const newState = JSON.parse(JSON.stringify(state));
-                const children = newState.blocks[selectedSpriteId][dropped.rootIdx].children.splice(dropped.idx);
-                if (newState.blocks[selectedSpriteId][dropped.rootIdx].children.length == 0) {
-                    newState.blocks[selectedSpriteId].splice(dropped.rootIdx, 1);
+                const children = newState.blocks[spriteId][dropped.rootIdx].children.splice(dropped.idx);
+                if (newState.blocks[spriteId][dropped.rootIdx].children.length == 0) {
+                    newState.blocks[spriteId].splice(dropped.rootIdx, 1);
                 }
                 return update(newState, {
                     blocks: {
-                        [selectedSpriteId]: {
+                        [spriteId]: {
                             $push: [{
                                 position: {
                                     top: Math.abs(position.finalPosition.y) - 15,
@@ -198,9 +210,9 @@ export function blockReducer(state = {
         // // if (newState.blocks[dropped.rootIdx].children.length == 0) {
         // //     newState.blocks.splice(dropped.rootIdx, 1);
         // // }
-        // return update(state, {
+        // return update(newState, {
         //     blocks: {
-        //         [selectedSpriteId]: {
+        //         [spriteId]: {
         //             [dropped.rootIdx] : {
         //                 position: {
         //                     $merge: {
@@ -219,9 +231,9 @@ export function blockReducer(state = {
         case "MOVE_IN_CONTAINER":
             let addAfterItemIdx = action.payload.addAfterItemIdx;
             if (isGlobalBlock(dragged)) {
-                return update(state, {
+                return update(newState, {
                     blocks: {
-                        [selectedSpriteId]: {
+                        [spriteId]: {
                             [dropped.rootIdx]: {
                                 children: {
                                     $splice: !addAfterItemIdx ? [[dropped.idx + 1, 0, { ...dragged }]] : [[dropped.idx, 0, { ...dragged }]],
@@ -232,10 +244,10 @@ export function blockReducer(state = {
                 })
             } else {
                 const newState = cloneDeep({ ...state });
-                const children = newState.blocks[selectedSpriteId][dragged.rootIdx].children.splice(dragged.idx);
+                const children = newState.blocks[spriteId][dragged.rootIdx].children.splice(dragged.idx);
                 const newState2 = update(newState, {
                     blocks: {
-                        [selectedSpriteId]: {
+                        [spriteId]: {
                             [dropped.rootIdx]: {
                                 children: {
                                     $splice: !addAfterItemIdx ? [[(dropped.idx + 1), 0, ...children]] : [[dropped.idx, 0, ...children]],
@@ -245,8 +257,8 @@ export function blockReducer(state = {
                     }
                 });
                 // remove empty block
-                if (newState2.blocks[selectedSpriteId][dragged.rootIdx].children.length == 0) {
-                    newState2.blocks[selectedSpriteId].splice(dragged.rootIdx, 1);
+                if (newState2.blocks[spriteId][dragged.rootIdx].children.length == 0) {
+                    newState2.blocks[spriteId].splice(dragged.rootIdx, 1);
                 }
                 return newState2;
             };
@@ -262,7 +274,7 @@ export function blockReducer(state = {
                     case SET_X_TO:
                     case SET_Y_TO:
                     case ROTATE_CLOCKWISE:
-                        return update(state, {
+                        return update(newState, {
                             globalBlocks: {
                                 [id]: {
                                     action: updatedAction
@@ -271,7 +283,7 @@ export function blockReducer(state = {
                         });
 
                     case ROTATE_ANTICLOCKWISE:
-                        return update(state, {
+                        return update(newState, {
                             globalBlocks: {
                                 [id]: {
                                     action: {
@@ -284,7 +296,7 @@ export function blockReducer(state = {
                     case GO_TO_COORDINATES:
                     case GLIDE_TO_COORDINATES:
                     case POINT_IN_DIRECTION:
-                        return update(state, {
+                        return update(newState, {
                             globalBlocks: {
                                 [id]: {
                                     action: updatedAction
@@ -293,7 +305,7 @@ export function blockReducer(state = {
                         });
 
                     default:
-                        return update(state, {
+                        return update(newState, {
                             globalBlocks: {
                                 [id]: {
                                     action: updatedAction
@@ -315,9 +327,9 @@ export function blockReducer(state = {
                     case CHANGE_SIZE_BY:
                     case CHANGE_SIZE:
                     case ROTATE_CLOCKWISE:
-                        return update(state, {
+                        return update(newState, {
                             blocks: {
-                                [selectedSpriteId]: {
+                                [spriteId]: {
                                     [rootId]: {
                                         children: {
                                             [id]: {
@@ -330,9 +342,9 @@ export function blockReducer(state = {
                         });
 
                     case ROTATE_ANTICLOCKWISE:
-                        return update(state, {
+                        return update(newState, {
                             blocks: {
-                                [selectedSpriteId] : {
+                                [spriteId]: {
                                     [rootId]: {
                                         children: {
                                             [id]: {
@@ -348,9 +360,9 @@ export function blockReducer(state = {
 
                     case GO_TO_COORDINATES:
                     case POINT_IN_DIRECTION:
-                        return update(state, {
+                        return update(newState, {
                             blocks: {
-                                [selectedSpriteId] : {
+                                [spriteId]: {
                                     [rootId]: {
                                         children: {
                                             [id]: {
@@ -362,9 +374,9 @@ export function blockReducer(state = {
                             }
                         });
                     default:
-                        return update(state, {
+                        return update(newState, {
                             blocks: {
-                                [selectedSpriteId] : {
+                                [spriteId]: {
                                     [rootId]: {
                                         children: {
                                             [id]: {
@@ -379,10 +391,10 @@ export function blockReducer(state = {
             }
         case "DELETE":
             if (action.payload.idx === 0) {
-                return update(state,
+                return update(newState,
                     {
                         blocks: {
-                            [selectedSpriteId]: {
+                            [spriteId]: {
                                 $splice: [[
                                     action.payload.idx, 1
                                 ]],
@@ -391,13 +403,15 @@ export function blockReducer(state = {
                     },
                 );
             } else {
-                return update(state, {
+                return update(newState, {
                     blocks: {
-                        [selectedSpriteId]: {
+                        [spriteId]: {
                             [action.payload.rootIdx]: {
-                                children: [[
-                                    action.payload.idx
-                                ]]
+                                children: {
+                                    $splice: [[
+                                        action.payload.idx
+                                    ]]
+                                }
                             },
                         },
                     },
@@ -406,31 +420,31 @@ export function blockReducer(state = {
         case "CLICK_PLAY":
             localStorage.setItem("b", JSON.stringify(state.blocks));
             return state;
-        case "ADD_SPRITE":
-            const newSprite = getNewSprite();
-            newSprite.id = action.payload.spriteId;
-            return update(state, {
-                sprite: {
-                    [newSprite.id]: { $set: newSprite },
-                },
-                blocks: {
-                    [newSprite.id]: {
-                        $set: [getDefaultNewBlock()]
-                    }
-                }
-            });
-        case "REMOVE_SPRITE":
-            return update(state, {
-                sprite: {
-                    $unset: [action.payload.id],
-                }
-            });
-        case "SELECT_SPRITE":
-            return update(state, {
-                selectedSpriteId: {
-                    $set: action.payload.id,
-                }
-            });
+        // case "ADD_SPRITE":
+        //     const newSprite = getNewSprite();
+        //     newSprite.id = action.payload.spriteId;
+        //     return update(newState, {
+        //         sprite: {
+        //             [newSprite.id]: { $set: newSprite },
+        //         },
+        //         blocks: {
+        //             [newSprite.id]: {
+        //                 $set: [getDefaultNewBlock()]
+        //             }
+        //         }
+        //     });
+        // case "REMOVE_SPRITE":
+        //     return update(newState, {
+        //         sprite: {
+        //             $unset: [action.payload.id],
+        //         }
+        //     });
+        // case "SELECT_SPRITE":
+        //     return update(newState, {
+        //         spriteId: {
+        //             $set: action.payload.id,
+        //         }
+        //     });
         default:
             return state;
     }
