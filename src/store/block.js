@@ -66,7 +66,7 @@ export const THINK_BUBBLE_FOR = "THINK_BUBBLE_FOR";
 export const SAY_BUBBLE_FOR = "SAY_BUBBLE_FOR";
 export const PLAY = "PLAY";
 const initialGlobalState = {
-    1: { id: 1, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Motion", action: { name: MOVE, value: "10", title: "move {x} steps" } },
+    1: { id: 1, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Motion", action: { name: MOVE, value: "10", title: "move {x} steps", customProps: {type: "number", min: -100, max: 100 } } },
     2: { id: 2, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Motion", action: { icon: "redo", name: ROTATE_CLOCKWISE, value: "10", title: "rotate {x} degree" } },
     3: { id: 3, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Motion", action: { icon: "undo", name: ROTATE_ANTICLOCKWISE, value: "-10", title: "rotate {x} degree" } },
     4: { id: 4, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Motion", action: { name: GO_TO_COORDINATES, value: [10, 10], title: "go to x: {x} y:" } },

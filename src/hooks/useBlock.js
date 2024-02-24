@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { timerEvents } from '../store/preview';
+import _ from 'lodash';
 
 // Custom hook for handling block events
 export const useBlockEvents = ({ action, selectedSpriteId, dispatch, resetSprite }) => {
@@ -38,6 +39,11 @@ export const useBlockEvents = ({ action, selectedSpriteId, dispatch, resetSprite
 export const useBlockInputChanges = ({ selectedSpriteId, dispatch, id, rootId, action }) => {
     const handleChange = useCallback(
         (e) => {
+            let value = e.target.value;
+            if (action?.customProps?.type === "number") {
+                if (isNaN(Number(value))) return;
+                value = _.clamp(Number(value), action.customProps.min, action.customProps.max)
+            }
             dispatch({
                 type: 'MODIFY_BLOCK',
                 payload: {
@@ -45,7 +51,7 @@ export const useBlockInputChanges = ({ selectedSpriteId, dispatch, id, rootId, a
                     id,
                     rootId,
                     name: action.name,
-                    value: e.target.value,
+                    value,
                 },
             });
         },
