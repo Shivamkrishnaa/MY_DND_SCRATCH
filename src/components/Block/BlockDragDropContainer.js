@@ -7,9 +7,12 @@ import BlockContainer from './BlockContainer';
 
 const styleId = "block-style";
 const BlockDragDropContainer = memo(({ idx, rootIdx }) => {
-  const [{ id, action, type }, spriteId] = useSelector((state) => {
+  const spriteId = useSelector((state) => {
+    return state.preview.present.selectedSpriteId;
+  });
+  const action = useSelector((state) => {
     const selectedSpriteId = state.preview.present.selectedSpriteId;
-    return [state.dnd.blocks[selectedSpriteId]?.[rootIdx]?.children?.[idx] || {}, selectedSpriteId];
+    return state.dnd.blocks[selectedSpriteId]?.[rootIdx]?.children?.[idx]
   });
   const ref = useRef(null);
   const isOnTopRef = useRef(false);
@@ -42,7 +45,7 @@ const BlockDragDropContainer = memo(({ idx, rootIdx }) => {
       }),
     }),[idx, rootIdx, isOnTopRef.current]);
   const [{ isDragging }, drag] = useDrag(() => ({
-    type,
+    type: ItemTypes.BLOCK,
     item: { idx, rootIdx, action },
     end: (item, monitor) => {
       if (!monitor.didDrop()) {

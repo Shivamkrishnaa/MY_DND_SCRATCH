@@ -1,11 +1,9 @@
 import React from 'react'
 import SidebarCategoryContainer from './SidebarCategoryContainer';
-import { useSelector } from 'react-redux';
+import { defaultCategories } from '../../store/block';
 
 export const SidebarBlockContainer = () => {
-    const categories = useSelector((state) => {
-        return Object.keys(_.groupBy(Object.values(state.dnd.globalBlocks), 'category'));
-    });
+    const categories = defaultCategories;
     return categories.map(category => {
         return (<SidebarCategoryContainer category={category} />)
     });

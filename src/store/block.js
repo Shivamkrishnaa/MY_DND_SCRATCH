@@ -89,6 +89,8 @@ const initialGlobalState = {
     18: { id: 18, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Looks", action: { color: "purple", name: SAY_BUBBLE_FOR, value: ["Hii", 1], title: " say {x} for {x} seconds ", type: "speech" } },
     19: { id: 19, uId: getGlobalUId(), type: ItemTypes.BLOCK, category: "Events", action: { color: "yellow", name: PLAY, title: " play " } },
 };
+export const blockCategories = Object.freeze(_.groupBy(Object.values(initialGlobalState), 'category'));
+export const defaultCategories = Object.freeze(Object.keys(blockCategories));
 
 export const defaultHeight = 100.04156036376953;
 export const defaultWidth = 95.17898101806641;
@@ -177,7 +179,7 @@ export function blockReducer(state = {
                                     children: [
                                         {
                                             id: dropped.id,
-                                            type: dropped.type,
+                                            // type: dropped.type,
                                             action: dropped.action,
                                         },
                                     ]
