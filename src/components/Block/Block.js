@@ -11,24 +11,10 @@ export const Block = memo(({ id, action, rootId }) => {
   const selectedSpriteId = useSelector((state) => state.preview.present.selectedSpriteId);
   const dispatch = useDispatch();
 
-  const resetSprite = () => {
-    dispatch({
-      type: 'CLICK_PLAY',
-      payload: {
-        id: selectedSpriteId,
-        action: {
-          ...action,
-          value: false,
-        },
-      },
-    });
-  };
+
 
   const { timerId, triggerEvent } = useBlockEvents({
-    action,
-    selectedSpriteId,
     dispatch,
-    resetSprite,
   });
 
   const handleChange = useBlockInputChanges({
@@ -44,17 +30,22 @@ export const Block = memo(({ id, action, rootId }) => {
   const handleClick = useCallback(
     (e) => {
       if (e.target.tagName === 'INPUT' || !selectedSpriteId) return;
-      triggerEvent();
+      triggerEvent({ 
+        action,
+        selectedSpriteId, });
     },
-    [selectedSpriteId, triggerEvent]
+    [selectedSpriteId, triggerEvent, action]
   );
 
   const handleKeyDown = useCallback(
     (e) => {
       if (!selectedSpriteId) return;
-      e.key === 'Enter' && triggerEvent();
+
+      e.key === 'Enter' && triggerEvent({
+        action,
+        selectedSpriteId,});
     },
-    [selectedSpriteId, triggerEvent]
+    [selectedSpriteId, triggerEvent, action]
   );
 
   return (

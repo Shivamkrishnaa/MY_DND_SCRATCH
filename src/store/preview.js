@@ -86,15 +86,16 @@ export function previewReducer(state = {
             const { idx, rootIdx, id } = action.payload;
             const { name, value, type } = action.payload.action ? action.payload.action : blocks[id][rootIdx].children[idx].action;
             if (!newState.sprite.hasOwnProperty(id)) {
-                newState = update(newState, {
-                    sprite: {
-                        [id]: {
-                            $set: {
-                                ...cloneDeep(defaultSpriteData),
-                            },
-                        },
-                    },
-                });
+                return state;
+                // newState = update(newState, {
+                //     sprite: {
+                //         [id]: {
+                //             $set: {
+                //                 ...cloneDeep(defaultSpriteData),
+                //             },
+                //         },
+                //     },
+                // });
             }
 
             switch (name) {

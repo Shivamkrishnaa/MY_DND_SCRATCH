@@ -1,34 +1,31 @@
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { PLAY } from '../../store/block';
+import { useBlockEvents } from '../../hooks/useBlock';
 
 export const SpriteWidget = memo(() => {
   const dispatch = useDispatch();
+  const { triggerEvent } = useBlockEvents({ dispatch });
+
   const blocksIdx = useSelector((state) => {
-    return Object.entries(state.dnd.blocks).reduce((result, [id, blocks]) => {
+    return Object.entries(state.dnd.blocks).filter(([spriteId, blocks]) => {
       const spriteContainsPlay = blocks.some((block) => block.children[0]?.action.name === PLAY);
-
       if (spriteContainsPlay) {
-        result[id] = blocks.map((parentBlock, rootIdx) => {
-          const isParentPlay = parentBlock.children[0]?.action.name === PLAY;
-          return isParentPlay ? parentBlock.children.map((childBlock, j) => (j !== 0 ? j : null)) : null;
-        });
+        blocks.selectedSpriteId = spriteId;
+        return blocks;
       }
-
-      return result;
-    }, {});
+      return false;
+    });
   });
   const startMove = () => {
-    Object.entries(blocksIdx).forEach(([id, value]) => {
+    (blocksIdx).forEach(([id, value]) => {
       value.forEach((block, rootIdx) => {
-        block.forEach((idx) => {
-          if (idx !== null) {
-            dispatch({
-              type: "CLICK_PLAY",
-              payload: { idx, rootIdx, id },
-            });
-          }
+        block.children.forEach((idx) => {
+          triggerEvent({
+            selectedSpriteId: value.selectedSpriteId,
+            ...idx,
+          });
         });
       });
     });

@@ -12,7 +12,7 @@ const BlockDragDropContainer = memo(({ idx, rootIdx }) => {
   });
   const action = useSelector((state) => {
     const selectedSpriteId = state.preview.present.selectedSpriteId;
-    return state.dnd.blocks[selectedSpriteId]?.[rootIdx]?.children?.[idx]
+    return state.dnd.blocks[selectedSpriteId]?.[rootIdx]?.children?.[idx].action
   });
   const ref = useRef(null);
   const isOnTopRef = useRef(false);
@@ -26,7 +26,7 @@ const BlockDragDropContainer = memo(({ idx, rootIdx }) => {
         const payload = {
           spriteId,
           dragged: item, // item which is dragged
-          dropped: { idx, rootIdx },
+          dropped: { idx, rootIdx, action },
           addAfterItemIdx: isOnTopRef.current,
           position: {
             initialPosition: monitor.getInitialSourceClientOffset(),

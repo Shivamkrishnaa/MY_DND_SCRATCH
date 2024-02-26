@@ -2,11 +2,24 @@ import { useCallback, useState } from 'react';
 import { timerEvents } from '../store/preview';
 import _ from 'lodash';
 
-// Custom hook for handling block events
-export const useBlockEvents = ({ action, selectedSpriteId, dispatch, resetSprite }) => {
-    const [timerId, setTimerId] = useState(null);
 
-    const triggerEvent = useCallback(() => {
+
+// Custom hook for handling block events
+export const useBlockEvents = ({  dispatch }) => {
+    const [timerId, setTimerId] = useState(null);
+    const triggerEvent = useCallback(({ action, selectedSpriteId }) => {
+        const resetSprite = () => {
+            dispatch({
+              type: 'CLICK_PLAY',
+              payload: {
+                id: selectedSpriteId,
+                action: {
+                  ...action,
+                  value: false,
+                },
+              },
+            });
+          };
         const isTimerEvent = timerEvents.includes(action.name);
         if (isTimerEvent) {
             if (timerId) {
@@ -30,7 +43,7 @@ export const useBlockEvents = ({ action, selectedSpriteId, dispatch, resetSprite
                 action,
             },
         });
-    }, [action, selectedSpriteId, dispatch, resetSprite, timerId]);
+    }, [dispatch, timerId, setTimerId]);
 
     return { timerId, setTimerId, triggerEvent };
 };
