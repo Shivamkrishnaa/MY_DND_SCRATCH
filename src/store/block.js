@@ -393,19 +393,19 @@ export function blockReducer(state = {
                 }
             }
         case "DELETE":
-            if (action.payload.idx === 0) {
-                return update(newState,
-                    {
-                        blocks: {
-                            [spriteId]: {
-                                $splice: [[
-                                    action.payload.idx, 1
-                                ]],
-                            },
-                        },
-                    },
-                );
-            } else {
+            // if (action.payload.idx === 0) {
+            //     return update(newState,
+            //         {
+            //             blocks: {
+            //                 [spriteId]: {
+            //                     $splice: [[
+            //                         action.payload.idx, 1
+            //                     ]],
+            //                 },
+            //             },
+            //         },
+            //     );
+            // } else {
                 return update(newState, {
                     blocks: {
                         [spriteId]: {
@@ -419,7 +419,7 @@ export function blockReducer(state = {
                         },
                     },
                 });
-            }
+            // }
         case "CLICK_PLAY":
             localStorage.setItem("b", JSON.stringify(state.blocks));
             return state;
