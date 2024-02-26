@@ -427,19 +427,7 @@ export function previewReducer(state = {
                 // break;
 
                 default:
-                    return update(newState, {
-                        sprite: {
-                            [action.payload.id]: {
-                                bubble: {
-                                    $merge: {
-                                        think: "say",
-                                        text: "",
-                                        time: 0,
-                                    },
-                                },
-                            }
-                        }
-                    });
+                    return state;
                 // break;
             };
         default:

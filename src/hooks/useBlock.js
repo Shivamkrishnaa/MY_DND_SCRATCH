@@ -5,35 +5,40 @@ import _ from 'lodash';
 
 
 // Custom hook for handling block events
-export const useBlockEvents = ({  dispatch }) => {
-    const [timerId, setTimerId] = useState(null);
-    const triggerEvent = useCallback(({ action, selectedSpriteId }) => {
+export const useBlockEvents = ({ dispatch }) => {
+    const [timerId, setTimerId] = useState({});
+    const triggerEvent = ({ action, selectedSpriteId }) => {
         const resetSprite = () => {
             dispatch({
-              type: 'CLICK_PLAY',
-              payload: {
-                id: selectedSpriteId,
-                action: {
-                  ...action,
-                  value: false,
+                type: 'CLICK_PLAY',
+                payload: {
+                    id: selectedSpriteId,
+                    action: {
+                        ...action,
+                        value: false,
+                    },
                 },
-              },
             });
-          };
+        };
         const isTimerEvent = timerEvents.includes(action.name);
         if (isTimerEvent) {
-            if (timerId) {
-                resetSprite();
-                clearTimeout(timerId); // Clear the old timeout
+            if (timerId?.[selectedSpriteId]?.[action.name]) {
+                clearTimeout(timerId[selectedSpriteId][action.name]); // Clear the old timeout
+                setTimerId((state)=>{
+                    // resetSprite();
+                    delete state[selectedSpriteId][action.name];
+                    return state;
+                });
             }
-        }
-
-        if (isTimerEvent) {
-            setTimerId(
-                setTimeout(() => {
-                    resetSprite();
-                }, action.value.filter((r) => typeof r === 'number')[0] * 1000)
-            );
+            setTimerId((timer) => ({
+                ...timer,
+                [selectedSpriteId]: {
+                    ...timer[selectedSpriteId],
+                    [action.name]: setTimeout(() => {
+                        resetSprite();
+                    }, action.value.filter((r) => typeof r === 'number')[0] * 1000)
+                }
+            }));
         }
 
         dispatch({
@@ -43,7 +48,7 @@ export const useBlockEvents = ({  dispatch }) => {
                 action,
             },
         });
-    }, [dispatch, timerId, setTimerId]);
+    }
 
     return { timerId, setTimerId, triggerEvent };
 };
