@@ -25,10 +25,10 @@ export const BubbleContainer = ({ id }) => {
     };
   });
   if (!text || display === "none") return <></>;
-  return <div className="relative"
+  return <div className="absolute"
     style={{
-      top: `calc(43% - 14rem + ${top}px - ${height / 2}px)`,
-      left: `calc(100% - 14.5rem + ${left}px + ${width / 2}px)`,
+      top: `calc(63% - 14rem + ${top}px - ${height / 2}px)`,
+      left: `calc(82% - 14.5rem + ${left}px + ${width / 2}px)`,
       display: "inline-block",
       transition,
     }}>

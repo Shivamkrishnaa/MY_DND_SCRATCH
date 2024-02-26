@@ -34,7 +34,7 @@ export const SpriteDragContainer = memo(({ id, children }) => {
     }
     return (<>
         <div ref={drag} data-testid="box"
-            className="relative inline-block"
+            className="absolute inline-block"
             style={{
                 top: `calc(60% - 14rem + ${top}px)`,
                 left: `calc(85% - 14.5rem + ${left}px)`,
