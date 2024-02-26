@@ -8,25 +8,23 @@ export const SpriteWidget = memo(() => {
   const dispatch = useDispatch();
   const { triggerEvent } = useBlockEvents({ dispatch });
 
-  const blocksIdx = useSelector((state) => {
-    return Object.entries(state.dnd.blocks).filter(([spriteId, blocks]) => {
-      const spriteContainsPlay = blocks.some((block) => block.children[0]?.action.name === PLAY);
-      if (spriteContainsPlay) {
-        blocks.selectedSpriteId = spriteId;
-        return blocks;
-      }
-      return false;
+  const sprites = useSelector((state) => {
+    const result = [];
+    Object.entries(state.dnd.blocks).forEach(([spriteId, blocks]) => {
+      blocks.forEach(block => {
+        if(block.children[0]?.action.name === PLAY) {
+          block.spriteId = spriteId;
+          result.push(block);
+        }
+      });
     });
+    return result;
   });
   const startMove = () => {
-    (blocksIdx).forEach(([id, value]) => {
-      value.forEach((block, rootIdx) => {
-        block.children.forEach((idx) => {
-          triggerEvent({
-            selectedSpriteId: value.selectedSpriteId,
-            ...idx,
-          });
-        });
+    sprites.forEach((blocks, rootIdx) => {
+      blocks.children.forEach((block) => {
+        block.selectedSpriteId = blocks.spriteId;
+        triggerEvent(block);
       });
     });
   };
