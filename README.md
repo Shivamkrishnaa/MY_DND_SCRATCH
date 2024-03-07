@@ -1,4 +1,15 @@
-# Scratch starter project
+# Scratch 
+
+## Features Implemented
+Blocks 'Motion' and 'Looks' Categories:
+
+- Implemented draggable and droppable blocks with functionalities similar to MIT Scratch.
+Users can interactively arrange and configure code blocks within the 'Motion' and 'Looks' categories.
+Run and Replay Functionality:
+
+- Added a 'Run' button to execute the code composed of the configured blocks.
+Incorporated a feature to replay the history of sets of actions performed on the sprite.
+Users can replay a specific action, enhancing the debugging and testing capabilities.
 
 To get started:
 
