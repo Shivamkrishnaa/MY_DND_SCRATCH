@@ -15,3 +15,6 @@ To get started:
 
 - Run `npm i` to install dependencies
 - Run `npm start` and open http://localhost:3000 to see the app
+
+## Demo
+![image](https://github.com/Shivamkrishnaa/my_dnd_scratch/assets/30428839/1fc75226-910f-4f43-bf87-099845511ceb)
